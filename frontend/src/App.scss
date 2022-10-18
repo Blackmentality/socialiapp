@@ -1,0 +1,26 @@
+@font-face {
+  font-family: pjr;
+  src: url("./assets/fonts/PlusJakartaSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: pjb;
+  src: url("./assets/fonts/PlusJakartaSans-Bold.ttf");
+}
+@font-face {
+  font-family: pjl;
+  src: url("./assets/fonts/PlusJakartaSans-Light.ttf");
+}
+@font-face {
+  font-family: pjs;
+  src: url("./assets/fonts/PlusJakartaSans-SemiBold.ttf");
+}
+
+* {
+  font-family: pjb;
+  color: var(--black);
+}
+
+:root {
+  --black: #000;
+}
