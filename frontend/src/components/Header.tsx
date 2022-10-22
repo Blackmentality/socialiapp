@@ -25,17 +25,18 @@ const Header = () => {
             <Link className="nav-link" to={"/home"}>
               <AiFillHome />
             </Link>
-            <Link className="nav-link" to={"/profile"}>
-              <FaUserCircle />
-            </Link>
             <Link className="nav-link" to={"/add-post"}>
               <SiAddthis />
             </Link>
+            <Link className="nav-link" to={"/profile"}>
+              <FaUserCircle />
+            </Link>
+            
           </Nav>
           <Form className="d-flex">
             <Form.Control
               type="search"
-              placeholder="Search"
+              placeholder="Search for post..."
               className="me-2"
               aria-label="Search"
             />
