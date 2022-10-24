@@ -24,7 +24,7 @@ const AddPost = () => {
                 style={{ height: "150px" }}
               />
             </FloatingLabel>
-            <div className="adp">
+            <div className="adp mb-3">
                 <img src={lifestyle} alt="" width={60} height={60} />
             </div>
             <Form.Select className="mb-3" aria-label="Default select example">

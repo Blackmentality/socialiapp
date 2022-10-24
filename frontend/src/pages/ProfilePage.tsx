@@ -1,10 +1,15 @@
 import { useState } from "react";
-import { Container, Nav, Button } from "react-bootstrap";
-import { Header } from "../components";
+import { Container, Nav, Button, Modal } from "react-bootstrap";
+import { Header, MasonryLayout } from "../components";
 import { bgImg, lifestyle } from "../constant/assets";
 import "./pages.scss";
 
 const ProfilePage = () => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const [active, setActive] = useState("posts");
   const handleChangeActiveNav = (eventKey: any) => {
     setActive(eventKey);
@@ -38,7 +43,9 @@ const ProfilePage = () => {
                     <span>Posts</span>
                     <h6>484</h6>
                   </div>
-                  <Button>Edit Profile</Button>
+                  <Button className="edit-btn" onClick={handleShow}>
+                    Edit Profile
+                  </Button>
                 </div>
               </div>
             </div>
@@ -48,7 +55,7 @@ const ProfilePage = () => {
           <Nav
             defaultActiveKey="posts"
             variant="pills"
-            className="justify-content-center"
+            className="justify-content-center mb-3"
             onSelect={handleChangeActiveNav}
           >
             <Nav.Item>
@@ -58,9 +65,56 @@ const ProfilePage = () => {
               <Nav.Link eventKey="bookmark">Bookmark</Nav.Link>
             </Nav.Item>
           </Nav>
-          {active === "posts" && <div>posts</div>}
-          {active === "bookmark" && <div>bookmark</div>}
+          {active === "posts" && (
+            <div>
+              <MasonryLayout />
+            </div>
+          )}
+          {active === "bookmark" && (
+            <div>
+              <MasonryLayout />
+            </div>
+          )}
         </div>
+        <Modal
+          show={show}
+          onHide={handleClose}
+          backdrop="static"
+          keyboard={false}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Edit Profile</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="profm-main">
+              <div className="profm-card">
+                <div className="profm-tm d-flex justify-content-between align-items-center">
+                  <h6>Profile Image</h6>
+                  <span>Change image</span>
+                </div>
+                <div className="text-center">
+                  <img src={lifestyle} alt="" className="profm-cimg" />
+                </div>
+              </div>
+              <div className="profm-card">
+                <div className="profm-tm d-flex justify-content-between align-items-center">
+                  <h6>Banner</h6>
+                  <span>Change banner</span>
+                </div>
+                <div>
+                  <img src={bgImg} alt="" className="profm-cbanner" />
+                </div>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            <Button variant="primary">Save Profile</Button>
+          </Modal.Footer>
+        </Modal>
       </Container>
     </div>
   );
