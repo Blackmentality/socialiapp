@@ -4,32 +4,38 @@
   padding: 3%;
   box-shadow: 0 4px 16px rgb(0 0 0 / 16%);
   border-radius: 10px;
+
   .post-card-bot {
     .btn {
       background-color: transparent;
       border: 0;
     }
+
     span {
       margin-right: 2%;
       color: #999;
       font-size: 0.9rem;
     }
   }
+
   .post-card-top {
     div {
       width: 100%;
       margin-left: 2%;
     }
+
     .badge {
       background-color: #000 !important;
       color: #fff;
       font-size: .8rem;
     }
+
     span {
       margin-right: 2%;
       color: #999;
       font-size: 0.9rem;
     }
+
     img {
       width: 60px;
       height: 60px;
@@ -37,8 +43,10 @@
       border-radius: 50%;
     }
   }
+
   .post-card-mid {
     margin: 1% 0;
+
     div {
       h5 {
         font-family: "pjl";
@@ -46,6 +54,7 @@
         margin-bottom: 2% !important;
       }
     }
+
     img {
       width: 100%;
       height: auto;
@@ -53,4 +62,14 @@
       border-radius: 10px;
     }
   }
+}
+
+.search-btn {
+  background-color: #000;
+  border: 0;
+}
+
+.search-btn:hover {
+  background-color: #e3e3e3;
+  color: var(--black);
 }

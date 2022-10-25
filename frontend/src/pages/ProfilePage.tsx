@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Container, Nav, Button, Modal } from "react-bootstrap";
+import { Container, Nav, Button, Modal, FloatingLabel, Form, Row, Col } from "react-bootstrap";
 import { Header, MasonryLayout } from "../components";
 import { bgImg, lifestyle } from "../constant/assets";
+import interests from "../constant/interest";
 import "./pages.scss";
 
 const ProfilePage = () => {
@@ -105,6 +106,39 @@ const ProfilePage = () => {
                 <div>
                   <img src={bgImg} alt="" className="profm-cbanner" />
                 </div>
+              </div>
+              <div className="profm-card">
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Full Name"
+                  className="mb-3"
+                >
+                  <Form.Control type="text" placeholder="Barbara Ampofo" />
+                </FloatingLabel>
+              </div>
+              <div className="profm-card">
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Bio"
+                  className="mb-3"
+                >
+                  <Form.Control as="textarea" style={{ height: '100px' }} type="text" placeholder="Enter your bio.." />
+                </FloatingLabel>
+              </div>
+              <div className="profm-card">
+                <div className="profm-tm d-flex justify-content-between align-items-center">
+                  <h6>Interests</h6>            
+                </div>
+                <Row>
+              {interests.map((interest, index) => (
+                <Col lg={4} key={index} className="gap-2 mb-4 text-center">
+                  <div className="interest-card">
+                    <img src={interest.img} height={50} alt="" />
+                    <h6>{interest.name}</h6>
+                  </div>
+                </Col>
+              ))}
+            </Row>               
               </div>
             </div>
           </Modal.Body>
