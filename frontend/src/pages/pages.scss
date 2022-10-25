@@ -186,3 +186,14 @@
     }
   }
 }
+
+.viewp-main{
+  width: 50%;
+  margin: 2% 25% 0;
+  .post-card-mid{
+    img{
+      height: 400px;
+      object-fit: cover;
+    }
+  }
+}
