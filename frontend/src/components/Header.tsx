@@ -9,7 +9,8 @@ const Header = () => {
   return (
     <Navbar bg="light" expand="lg">
       <Container>
-        <Navbar.Brand href="#">
+    
+        <Link to="/home" className="navbar-brand">
           <img
             src={logo}
             width="30"
@@ -18,10 +19,10 @@ const Header = () => {
             alt="React Bootstrap logo"
           />
           Sociali
-        </Navbar.Brand>
+        </Link>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
-          <Nav className="mx-auto" style={{ maxHeight: "100px" }} navbarScroll>
+          <Nav className="mx-auto nav-size" style={{ maxHeight: "100px" }} navbarScroll>
             <Link className="nav-link" to={"/home"}>
               <AiFillHome />
             </Link>

@@ -146,7 +146,7 @@ const ProfilePage = () => {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary">Save Profile</Button>
+            <Button className="btn-sprof" variant="primary">Save Profile</Button>
           </Modal.Footer>
         </Modal>
       </Container>

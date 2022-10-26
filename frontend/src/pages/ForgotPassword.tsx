@@ -12,7 +12,8 @@ const ForgotPassword = () => {
           <h6 className="m-0">Sociali</h6>
         </div>
         <div className="login-bot">
-          <h5 className="m-0">Oh Fuck!!!</h5>
+          <h5 className="m-0">Reset Your Password</h5>
+            <h6 className="reset-pass">You will receive instructions for resetting your password</h6>
           <div className="mt-3">
             <Form>
               <Form.Group className="main-group" controlId="email">
