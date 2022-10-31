@@ -1,43 +1,52 @@
 import { Schema, model } from "mongoose";
 const UserSchema = new Schema({
-    username:{
+    username: {
         type: String,
         unique: true
     },
-    password:{
+    password: {
         type: String,
         unique: true
     },
-    fullname:{
-        type: String
-    },
-    profile_img:{
+    fullname: {
         type: String,
-        default:""
+        required: true,
     },
-    banner:{
+    profile_img: {
         type: String,
-        default:""
+        default: ""
     },
-    interests:{
+    banner: {
+        type: String,
+        default: ""
+    },
+    interests: {
         type: [String],
-        default:[]
+        default: []
     },
-    email:{
+    saved: {
+        type: [String],
+        default: []
+    },
+    email: {
         type: String,
+        required: true,
         unique: true
     },
-    bio:{
+    bio: {
         type: String,
-        default:""
+        default: ""
     },
-    post_counts:{
+    post_counts: {
         type: Number,
-        default:0
+        default: 0
     }
+}, { timestamps: true });
 
+const UserModel = model('User', UserSchema);
 
-})
+export default UserModel;
+
 
 
 

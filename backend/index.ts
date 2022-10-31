@@ -1,15 +1,34 @@
-import express, { Express, Request, Response } from 'express';
-import dotenv from 'dotenv';
+import express from 'express';
+import { config } from 'dotenv';
+import cookieParser from 'cookie-parser';
+import connectDB from './db/db';
+import AuthRoutes from './routes/AuthRoutes';
+import UserRoutes from './routes/UserRoutes';
+import PostRoutes from './routes/PostRoutes';
+import CommentRoutes from './routes/CommentRoutes';
 
-dotenv.config();
+import cookieSession from 'cookie-session';
+import cors from 'cors';
 
-const app: Express = express();
-const port = process.env.PORT;
+config();
+const PORT = process.env.PORT || 7000;
+const app = express();
+app.use(cors({ origin: ["http://localhost:3000", "http://localhost:3001"], credentials: true, }))
+app.use(express.json());
+app.use(cookieParser());
+app.use(cookieSession({ name: "session", keys: ['bbamp'], maxAge: 24 * 60 * 60 * 100 }));
+app.use('/api/auth', AuthRoutes);
+app.use('/api/user', UserRoutes);
+app.use('/api/posts', PostRoutes);
+app.use('/api/comment', CommentRoutes);
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('We can start coding now, Barbara Ampofo');
-});
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${port}`);
-});
+
+const startServer = () => {
+  app.listen(PORT, () => {
+    console.log(`App Started, Listening to port ${PORT}`);
+
+  });
+}
+
+connectDB(startServer);
