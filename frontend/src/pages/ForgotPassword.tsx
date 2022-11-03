@@ -4,25 +4,33 @@ import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import { useToasts } from "react-toast-notifications";
 
 axios.defaults.withCredentials = true;
 
 const ForgotPassword = () => {
+  const { addToast } = useToasts();
+
+  const showToast = (message: string, toastType: any) => {
+    addToast(message, {
+      appearance: toastType,
+      autoDismiss: true,
+    });
+  };
   const [email, setEmail] = useState("");
   const forgotUser = async () => {
     const data = {
       email: email,
     };
     try {
-      const forgotRes = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_BASE_URL}/auth/forgot-password`,
         data
       );
-      console.log(forgotRes.data.data);
-    } catch (error) {
-      console.log(error);
+      showToast("Password reset instructions sent to your email!", "success");
+    } catch (error: any) {
+      showToast(error.message, "error");
     }
-    console.log(email);
   };
   return (
     <div className="container p-0">

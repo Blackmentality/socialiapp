@@ -4,9 +4,19 @@ import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { useToasts } from "react-toast-notifications";
 
 axios.defaults.withCredentials = true;
 const Login = () => {
+  const { addToast } = useToasts();
+
+  const showToast = (message: string, toastType: any) => {
+    addToast(message, {
+      appearance: toastType,
+      autoDismiss: true,
+    });
+  };
+
   const initialValue = {
     email: "",
     password: "",
@@ -17,16 +27,17 @@ const Login = () => {
     setLoginData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const loginUser = async() => {
-    
+  const loginUser = async () => {
     try {
-      const loginRes = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/signin`, loginData);
+      const loginRes = await axios.post(
+        `${process.env.REACT_APP_BASE_URL}/auth/signin`,
+        loginData
+      );
       console.log(loginRes.data.data);
-      
-    } catch (error) {
-      console.log(error);
+      showToast("Logged in successfully!", "success");
+    } catch (error: any) {
+      showToast(error.message, "error");
     }
-    console.log(loginData);
   };
 
   return (

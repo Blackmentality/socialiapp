@@ -4,8 +4,17 @@ import { Form, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { useToasts } from "react-toast-notifications";
 
 const Register = () => {
+  const { addToast } = useToasts();
+
+  const showToast = (message: string, toastType: any) => {
+    addToast(message, {
+      appearance: toastType,
+      autoDismiss: true,
+    });
+  };
   const initialValue = {
     email: "",
     password: "",
@@ -19,8 +28,8 @@ const Register = () => {
   };
 
   const registerUser = async () => {
-    console.log('click');
-    
+    console.log("click");
+
     const data = {
       fullname: `${registerData.fname} ${registerData.lname}`,
       email: `${registerData.email}`,
@@ -32,8 +41,9 @@ const Register = () => {
         data
       );
       console.log(registerRes.data.data);
-    } catch (error) {
-      console.log(error);
+      showToast("Registered successfully!", "success");
+    } catch (error: any) {
+      showToast(error.message, "error");
     }
   };
   return (
