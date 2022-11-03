@@ -31,9 +31,7 @@ const registerUser = async (req: Request, res: Response) => {
         })
         userGenToken.save();
 
-        const tokenUrl = `${process.env.BASE_URL}/auth/${newUser._id}/verify/${userGenToken.token}`;
-
-        await sendEmail('verify', registerData.email, 'Verify your Kuuote account!', registerData.fullname, '', tokenUrl, '', '', '');
+        // await sendEmail('Congratulations for joining Sociali', 'Welcome to Sociali platform!', registerData.email);
 
         const token = sign({ id: newUser._id }, `${process.env.JWT_SECRET}`, { expiresIn: '1d' });
         delete getUser['password'];
@@ -89,7 +87,7 @@ const forgotPassword = async (req: Request, res: Response) => {
         userGenToken.save();
 
         const url: string = `${process.env.BASE_URL}/auth/${isUser._id}/password-reset/${userGenToken.token}`;
-        sendEmail('forgot', isUser.email, 'Password Reset', isUser.fullname, '', url, '', '', '');
+        sendEmail('Forgot Password', `Please reset your account password\n url`, isUser.email);
         res.status(200).json({ message: 'Password reset email sent', success: true });
 
     } catch (error: any) {

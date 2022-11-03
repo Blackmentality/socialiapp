@@ -2,9 +2,33 @@ import { logo } from "../constant/assets";
 import "./pages.scss";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-type Props = {};
+import { useState } from "react";
+import axios from "axios";
 
-const Login = (props: Props) => {
+axios.defaults.withCredentials = true;
+const Login = () => {
+  const initialValue = {
+    email: "",
+    password: "",
+  };
+  const [loginData, setLoginData] = useState(initialValue);
+
+  const changeValue = (e: any) => {
+    setLoginData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const loginUser = async() => {
+    
+    try {
+      const loginRes = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/signin`, loginData);
+      console.log(loginRes.data.data);
+      
+    } catch (error) {
+      console.log(error);
+    }
+    console.log(loginData);
+  };
+
   return (
     <div className="container p-0">
       <div className="main-login">
@@ -18,12 +42,19 @@ const Login = (props: Props) => {
             <Form>
               <Form.Group className="main-group" controlId="email">
                 <Form.Label>Email</Form.Label>
-                <Form.Control type="email" placeholder="Enter your email" />
+                <Form.Control
+                  onChange={(e) => changeValue(e)}
+                  name="email"
+                  type="email"
+                  placeholder="Enter your email"
+                />
               </Form.Group>
               <Form.Group className="main-group" controlId="password">
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
+                  onChange={(e) => changeValue(e)}
+                  name="password"
                   placeholder="Enter your password"
                 />
               </Form.Group>
@@ -32,6 +63,7 @@ const Login = (props: Props) => {
                   variant="primary"
                   className="mb-4 main-login-btn"
                   size="lg"
+                  onClick={loginUser}
                 >
                   Login
                 </Button>

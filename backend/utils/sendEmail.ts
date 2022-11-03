@@ -1,72 +1,28 @@
-import express from "express";
 import nodemailer from "nodemailer";
-import path from "path";
-const hbs = require('nodemailer-express-handlebars');
-const viewPath = path.resolve(__dirname, '../src/templates/views/');
-
-let res = Response;
-const sendEmail = async (type: string, email: string, subject: string, fullname: string,
-    legal: string, link: string, date: string, message: string, department: string) => {
+const sendEmail = async (subject: string, message: string, email: string) => {
     try {
-        const transporter = nodemailer.createTransport({
-            host: process.env.MAILER_HOST,
-            service: process.env.SERVICE,
-            port: Number(process.env.EMAIL_PORT),
-            secure: Boolean(process.env.SECURE),
+        let testAccount = await nodemailer.createTestAccount();
+        let transporter = nodemailer.createTransport({
+            host: "smtp.ethereal.email",
+            port: 587,
+            secure: false,
             auth: {
-                user: process.env.EMAIL_SENDER,
-                pass: process.env.EMAIL_PASS,
+                user: testAccount.user,
+                pass: testAccount.pass
             },
         });
-        transporter.use('compile', hbs({
-            viewEngine: {
-                extName: '.handlebars',
-                layoutsDir: viewPath,
-                defaultLayout: false,
-                express
-            },
-            viewPath: viewPath,
-            extName: '.handlebars',
-        }));
+        let info = await transporter.sendMail({
+            from: '"Sociali 👻" <hello@sociali.com>',
+            to: `${email}`,
+            subject: `${subject}`,
+            text: `${message}`,
+        });
 
-        let mailOptions: any = {
-            from: `"Kuuote" <${process.env.EMAIL_SENDER}>`,
-            to: email,
-            subject: subject,
-            template: '',
-            context: {
-                name: fullname,
-                legal,
-                link,
-                date,
-                message,
-                department
-            }
-        };
-        if (type === 'welcome') {
-            mailOptions['template'] = 'welcome';
-        } else if (type === 'forgot') {
-            mailOptions['template'] = 'forgot'
-        } else if (type === 'message') {
-            mailOptions['template'] = 'message'
-        } else if (type === 'verify') {
-            mailOptions['template'] = 'verify'
-        } else if (type === 'legal') {
-            mailOptions['template'] = 'legal'
-        }
-
-        setTimeout(() => {
-            transporter.sendMail(mailOptions, function (error: any, info: any) {
-                if (error) {
-                    console.log(error);
-                } else {
-                    console.log('sent successfully\nEmail sent: ' + info.response);
-                }
-            });
-        }, 500);
-    } catch (error: any) {
-        console.log(error.message);
+        console.log("Message sent: %s", info.messageId);
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    } catch (error) {
+        console.log(error);
     }
-};
+}
 
 export default sendEmail
