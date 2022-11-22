@@ -22,14 +22,18 @@ const ForgotPassword = () => {
     const data = {
       email: email,
     };
-    try {
-      await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/auth/forgot-password`,
-        data
-      );
-      showToast("Password reset instructions sent to your email!", "success");
-    } catch (error: any) {
-      showToast(error.message, "error");
+    if (email !== "") {
+      try {
+        await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/auth/forgot-password`,
+          data
+        );
+        showToast("Password reset instructions sent to your email!", "success");
+      } catch (error: any) {
+        showToast(error.response.data.message, "error");
+      }
+    } else {
+      showToast("Please fill all the input fields!", "warning");
     }
   };
   return (
@@ -61,6 +65,7 @@ const ForgotPassword = () => {
                   variant="primary"
                   className="mb-4 main-login-btn"
                   size="lg"
+                  disabled={email === ""}
                   onClick={forgotUser}
                 >
                   Reset Password

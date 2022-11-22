@@ -4,14 +4,26 @@ import { Request, Response } from 'express';
 import PostModel from '../models/Post';
 
 
+
 const pageLimit = 20;
+
+const generateImg = (img_file: any) => {
+    const encoded = img_file?.buffer.toString('base64');
+    const encode_img = `data:image/jpeg;base64,${encoded}`;
+    return encode_img;
+}
+
 // create a post
 const createPost = async (req: any, res: any, next: any) => {
     const userId = req.uData.id;
-
+    let promoBody = JSON.parse(req.body.promoData);
+    if (req.file !== undefined) {
+        const image = generateImg(req.file);
+        promoBody.image = image
+    }
     try {
         const newPost = new PostModel({
-            ...req.body, owner: userId
+            ...promoBody, owner: userId
         })
         const post = await newPost.save();
         const user = await UserModel.findById(userId);

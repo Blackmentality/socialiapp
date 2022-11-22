@@ -1,4 +1,5 @@
 import { Router } from "express";
+import upload from "../config/imageUpload";
 import { createPost, deletePost, editPost, getPost, getPostsbyCategory, getRandomPosts, likeDislikePost, saveAndUnSavePost, searchPosts } from "../controllers/PostController";
 import verifyToken from "../middleware/VerifyToken";
 
@@ -11,12 +12,11 @@ router.get('/random', getRandomPosts);
 // search posts
 router.get('/search', searchPosts);
 
-
 // get a posts
 router.get('/:id', getPost);
 
 // get postd by tags
-router.get('/tags', );
+router.get('/tags',);
 
 
 // get posts by category
@@ -32,7 +32,7 @@ router.put('/like/:id', verifyToken, likeDislikePost);
 router.put('/save/:id', verifyToken, saveAndUnSavePost);
 
 // create a post
-router.post('/', verifyToken, createPost);
+router.post('/', upload.single('image'), verifyToken, createPost);
 
 // delete post
 router.delete('/:id', verifyToken, deletePost);

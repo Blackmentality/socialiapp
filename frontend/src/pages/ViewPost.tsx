@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Container, Button, ButtonGroup, Badge, FloatingLabel, Form } from "react-bootstrap";
 import { Header } from "../components";
-import { lifestyle, post1 } from "../constant/assets";
+import { profile, post1 } from "../constant/assets";
 import {
   BsHeartFill,
   BsFillChatQuoteFill,
@@ -28,7 +28,7 @@ const ViewPost = () => {
         <div className="viewp-main">
           <div className="post-card">
             <div className="post-card-top d-flex justify-content-start align-items-center">
-              <img src={lifestyle} alt="" />
+              <img src={profile} alt="" />
               <div>
                 <h6 className="m-0 text-capitalize">{postData.user.name}</h6>
                 <Badge>Food</Badge>
@@ -72,7 +72,7 @@ const ViewPost = () => {
             <div className="post-comment mt-2">
               <h5 className="mb-2">Comments</h5>
               <div className="pc-card d-flex justify-content-start">
-                <img src={lifestyle} alt="" />
+                <img src={profile} alt="" />
                 <div>
                   <h6 className="mb-0">@Babbie</h6>
                   <p>Lorem ipsum dolor sit amet consectetur.</p>

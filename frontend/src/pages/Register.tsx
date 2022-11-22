@@ -1,14 +1,17 @@
 import { logo } from "../constant/assets";
 import "./pages.scss";
 import { Form, Row, Col, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useToasts } from "react-toast-notifications";
 
 const Register = () => {
+  const navigate = useNavigate();
   const { addToast } = useToasts();
-
+  const goToInterest = () => {
+    navigate("/onboarding");
+  };
   const showToast = (message: string, toastType: any) => {
     addToast(message, {
       appearance: toastType,
@@ -35,15 +38,24 @@ const Register = () => {
       email: `${registerData.email}`,
       password: `${registerData.password}`,
     };
-    try {
-      const registerRes = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/auth/register`,
-        data
-      );
-      console.log(registerRes.data.data);
-      showToast("Registered successfully!", "success");
-    } catch (error: any) {
-      showToast(error.message, "error");
+    if (
+      registerData.email !== "" &&
+      registerData.fname !== "" &&
+      registerData.lname !== "" &&
+      registerData.password !== ""
+    ) {
+      try {
+        const registerRes = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/auth/register`,
+          data
+        );
+        console.log(registerRes.data.data);
+        showToast("Registered successfully!", "success");
+      } catch (error: any) {
+        showToast(error.response.data.message, "error");
+      }
+    } else {
+      showToast("Please fill all the input fields!", "warning");
     }
   };
   return (

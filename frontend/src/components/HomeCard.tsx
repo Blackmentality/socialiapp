@@ -1,4 +1,4 @@
-import { lifestyle } from "../constant/assets";
+import { profile } from "../constant/assets";
 import { Badge, ButtonGroup, Button } from "react-bootstrap";
 import "./components.scss";
 import {
@@ -16,7 +16,7 @@ const HomeCard = ({ postData }: any) => {
   return (
     <div className="post-card">
       <div className="post-card-top d-flex justify-content-start align-items-center">
-        <img src={lifestyle} alt="" />
+        <img src={profile} alt="" />
         <div>
           <h6 className="m-0 text-capitalize">{postData.user.name}</h6>
           <Badge>Food</Badge>

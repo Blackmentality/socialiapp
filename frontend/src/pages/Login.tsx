@@ -1,14 +1,18 @@
 import { logo } from "../constant/assets";
 import "./pages.scss";
 import { Form, Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useToasts } from "react-toast-notifications";
+import { useDispatch } from "react-redux";
+import { assignUser } from "../redux/features/authSlice";
 
 axios.defaults.withCredentials = true;
 const Login = () => {
+  const navigate = useNavigate();
   const { addToast } = useToasts();
+  const dispatch = useDispatch();
 
   const showToast = (message: string, toastType: any) => {
     addToast(message, {
@@ -28,15 +32,31 @@ const Login = () => {
   };
 
   const loginUser = async () => {
-    try {
-      const loginRes = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/auth/signin`,
-        loginData
-      );
-      console.log(loginRes.data.data);
-      showToast("Logged in successfully!", "success");
-    } catch (error: any) {
-      showToast(error.message, "error");
+    if (loginData.email !== "" && loginData.password !== "") {
+      try {
+        const loginRes = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/auth/signin`,
+          loginData
+        );
+        localStorage.setItem(
+          "sociali_user",
+          JSON.stringify(loginRes.data.data)
+        );
+        dispatch(assignUser(loginRes.data.data));
+        if (loginRes.data.data.interests.length < 3) {
+          navigate("/onboarding");
+        } else {
+          navigate("/home");
+          showToast(
+            `Hi ${loginRes.data.data.fullname} \n Welcome to Sociali`,
+            "success"
+          );
+        }
+      } catch (error: any) {
+        showToast(error.response.data.message, "error");
+      }
+    } else {
+      showToast("Please fill all the input fields!", "warning");
     }
   };
 
@@ -57,6 +77,7 @@ const Login = () => {
                   onChange={(e) => changeValue(e)}
                   name="email"
                   type="email"
+                  required={true}
                   placeholder="Enter your email"
                 />
               </Form.Group>
@@ -66,6 +87,7 @@ const Login = () => {
                   type="password"
                   onChange={(e) => changeValue(e)}
                   name="password"
+                  required={true}
                   placeholder="Enter your password"
                 />
               </Form.Group>
@@ -75,6 +97,7 @@ const Login = () => {
                   className="mb-4 main-login-btn"
                   size="lg"
                   onClick={loginUser}
+                  disabled={loginData.email === "" && loginData.password === ""}
                 >
                   Login
                 </Button>

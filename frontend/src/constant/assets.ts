@@ -1,5 +1,6 @@
 import logo from '../assets/img/logo.png'
-import bgImg from '../assets/img/bgImg.jpeg'
+import banner from '../assets/img/banner.jpg'
+import profile from '../assets/img/profile.jpg';
 import post1 from '../assets/img/posts/post1.jpeg'
 import post2 from '../assets/img/posts/post2.jpeg'
 import post3 from '../assets/img/posts/post3.jpeg'
@@ -8,7 +9,8 @@ import lifestyle from '../assets/img/interests/lifestyle.jpeg';
 
 export {
     logo,
-    bgImg,
+    profile,
+    banner,
     lifestyle,
     post1,
     post2,
