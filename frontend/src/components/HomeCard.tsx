@@ -1,22 +1,18 @@
 import { profile } from "../constant/assets";
-import { Badge, ButtonGroup, Button } from "react-bootstrap";
+import { Badge } from "react-bootstrap";
 import "./components.scss";
 import TimeAgo from "react-timeago";
-import {
-  BsHeartFill,
-  BsFillChatQuoteFill,
-  BsShare,
-  BsBookmark,
-} from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import PostActions from "./PostActions";
 
 const HomeCard = ({ postData }: any) => {
   const [postAuthor, setPostAuthor]: any = useState(null);
+  const [likes, setLikes] = useState(postData.likesCount);
   const navigate = useNavigate();
   const handleViewPost = () => {
-    navigate("/view-post/4975");
+    navigate(`/view-post/${postData._id}`);
   };
 
   const getUser = async () => {
@@ -70,24 +66,14 @@ const HomeCard = ({ postData }: any) => {
         </div>
       </div>
       <div className="post-card-bot d-flex justify-content-between align-items-center">
-        <div>
-          <ButtonGroup aria-label="Basic example">
-            <Button>
-              <BsHeartFill />
-            </Button>
-            <Button>
-              <BsFillChatQuoteFill />
-            </Button>
-            <Button>
-              <BsShare />
-            </Button>
-            <Button>
-              <BsBookmark />
-            </Button>
-          </ButtonGroup>
-        </div>
+        <PostActions
+          id={postData._id}
+          postData={postData}
+          likesFunc={setLikes}
+          allLikes={likes}
+        />
         <div className="w-50 d-flex justify-content-end align-items-center">
-          <span>{postData.likesCount} Likes</span>
+          <span>{likes} Likes</span>
           <span>|</span>
           <span>{postData.commentsCount} Comments</span>
         </div>

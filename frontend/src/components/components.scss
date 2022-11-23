@@ -100,3 +100,15 @@
   background-color: #e3e3e3;
   color: var(--black);
 }
+
+.postAc {
+  svg {
+    fill: #999;
+  }
+}
+
+.likedActive {
+  svg {
+    fill: #f00 !important;
+  }
+}
