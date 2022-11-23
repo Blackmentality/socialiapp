@@ -27,7 +27,7 @@
     .badge {
       background-color: #000 !important;
       color: #fff;
-      font-size: .8rem;
+      font-size: 0.8rem;
     }
 
     span {
@@ -58,6 +58,7 @@
     img {
       width: 100%;
       height: auto;
+      max-height: 500px;
       object-fit: cover;
       border-radius: 10px;
     }
@@ -75,7 +76,7 @@
 }
 
 .nav-size {
-  svg{
+  svg {
     font-size: 1.5rem;
   }
 }

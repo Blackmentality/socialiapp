@@ -1,6 +1,7 @@
 import { profile } from "../constant/assets";
 import { Badge, ButtonGroup, Button } from "react-bootstrap";
 import "./components.scss";
+import TimeAgo from "react-timeago";
 import {
   BsHeartFill,
   BsFillChatQuoteFill,
@@ -8,22 +9,52 @@ import {
   BsBookmark,
 } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 const HomeCard = ({ postData }: any) => {
+  const [postAuthor, setPostAuthor]: any = useState(null);
   const navigate = useNavigate();
   const handleViewPost = () => {
     navigate("/view-post/4975");
   };
+
+  const getUser = async () => {
+    const author = await axios.get(
+      `${process.env.REACT_APP_BASE_URL}/user/${postData.owner}`
+    );
+    setPostAuthor(author.data.data);
+  };
+
+  const viewProfile = () => {
+    navigate(`/profile/${postAuthor._id}`);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
   return (
     <div className="post-card">
       <div className="post-card-top d-flex justify-content-start align-items-center">
-        <img src={profile} alt="" />
+        {postAuthor !== null && (
+          <img
+            onClick={viewProfile}
+            src={
+              postAuthor.profile_img !== "" ? postAuthor.profile_img : profile
+            }
+            alt="profile-img"
+          />
+        )}
         <div>
-          <h6 className="m-0 text-capitalize">{postData.user.name}</h6>
-          <Badge>Food</Badge>
+          <h6 onClick={viewProfile} className="m-0 text-capitalize">
+            {postAuthor !== null ? postAuthor.fullname : ""}
+          </h6>
+          <Badge>{postData.category}</Badge>
           <span>|</span>
-          <span>@{postData.user.username}</span>
+          <span>@{postAuthor !== null ? postAuthor.username : ""}</span>
           <span>|</span>
-          <span>1hr ago</span>
+          <span>{postData !== null ? postData.createdAt : ""}</span>
         </div>
       </div>
       <div className="post-card-mid">
@@ -33,8 +64,8 @@ const HomeCard = ({ postData }: any) => {
               {postData.caption}
             </h5>
           )}
-          {postData.img !== "" && (
-            <img onClick={handleViewPost} src={postData.img} alt="" />
+          {postData.image !== "" && (
+            <img onClick={handleViewPost} src={postData.image} alt="" />
           )}
         </div>
       </div>
@@ -56,9 +87,9 @@ const HomeCard = ({ postData }: any) => {
           </ButtonGroup>
         </div>
         <div className="w-50 d-flex justify-content-end align-items-center">
-          <span>23 Likes</span>
+          <span>{postData.likesCount} Likes</span>
           <span>|</span>
-          <span>100 Comments</span>
+          <span>{postData.commentsCount} Comments</span>
         </div>
       </div>
     </div>

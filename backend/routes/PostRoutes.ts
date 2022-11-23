@@ -1,26 +1,21 @@
 import { Router } from "express";
 import upload from "../config/imageUpload";
-import { createPost, deletePost, editPost, getPost, getPostsbyCategory, getRandomPosts, likeDislikePost, saveAndUnSavePost, searchPosts } from "../controllers/PostController";
+import { createPost, deletePost, editPost, getPost, getUserPostsInterest, likeDislikePost, saveAndUnSavePost, searchPosts, getUserPosts } from "../controllers/PostController";
 import verifyToken from "../middleware/VerifyToken";
 
 const router = Router();
 
+// get all posts user
+router.get('/user/:id', verifyToken, getUserPosts);
 
-// get all posts
-router.get('/random', getRandomPosts);
+// get for you posts with (selected categories )
+router.get('/interest', verifyToken, getUserPostsInterest);
 
 // search posts
 router.get('/search', searchPosts);
 
 // get a posts
 router.get('/:id', getPost);
-
-// get postd by tags
-router.get('/tags',);
-
-
-// get posts by category
-router.get('/category/:id', getPostsbyCategory);
 
 // edit post
 router.put('/:id', verifyToken, editPost);

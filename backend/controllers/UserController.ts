@@ -79,42 +79,8 @@ const changeProfileImg = async (req: any, res: Response, next: any) => {
 
 }
 
-// search accounts
-const searchAccounts = async (req: Request, res: any, next: any) => {
-    const searchQuery = req.query.q;
-    try {
-        if (searchQuery === '') return next(res.status(404)
-            .json({ message: `Invalid search query` }));
-
-        const users = await UserModel.find({
-            $or: [
-                { username: { $regex: searchQuery, $options: 'i' } }, { fullname: { $regex: searchQuery, $options: 'i' } }
-            ]
-        }).limit(40);
-        res.status(200).json({ data: users, messages: 'got search users', success: true });
-    } catch (error) {
-
-    }
-}
-
-// get all accounts
-const getRandomAccounts = async (req: any, res: any, next: any) => {
-    const page = parseInt(req.query.page) - 1 || 0;
-    const skip = page * pageLimit;
-
-    try {
-        const getRandUsers = await UserModel.aggregate([{ $skip: skip }, { $limit: pageLimit }])
-        const getRandTotal = await UserModel.countDocuments()
-        res.status(200).json({ success: true, data: getRandUsers, message: 'got all random users', page: page + 1, total: getRandTotal });
-    } catch (error: any) {
-        next(sendError(res, 500, error.message));
-    }
-}
-
 export {
     getUserById,
     editUserProfile,
     changeProfileImg,
-    searchAccounts,
-    getRandomAccounts,
 }

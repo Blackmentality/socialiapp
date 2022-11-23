@@ -3,8 +3,6 @@ import UserModel from '../models/User';
 import { Request, Response } from 'express';
 import PostModel from '../models/Post';
 
-
-
 const pageLimit = 20;
 
 const generateImg = (img_file: any) => {
@@ -137,71 +135,17 @@ const saveAndUnSavePost = async (req: any, res: any, next: any) => {
 
 // get all posts user
 const getUserPosts = async (req: any, res: any, next: any) => {
-    const mainUserId = req.uData.id;
     const reqUId = req.params.id;
+    const page = parseInt(req.query.page) - 1 || 0;
+    const skip = page * pageLimit;
 
     try {
         const getUser = await UserModel.findById(reqUId);
         if (!getUser) return next(sendError(res, 404, 'User not found!'));
 
-        // if (getUser.account_type !== 'private' || mainUserId === getUser._id) {
-        const getPosts = await PostModel.find({ owner: reqUId }).limit(20);
-        res.status(200).json({ success: true, data: getPosts, message: 'got user posts successfully' });
-        // } else {
-        next(sendError(res, 403, `Can't get user posts`));
-        // }
-    } catch (error: any) {
-        next(sendError(res, 500, error.message));
-    }
-}
-
-// get posts by tags
-const getPostsByTags = async (req: Request, res: any, next: any) => {
-    const tag = req.query.tag;
-    try {
-        const getTagPosts = await PostModel.find({ tags: { $in: [tag] } }).limit(30);
-        res.status(200).json({ success: true, data: getTagPosts, message: `got all ${tag} posts` });
-    } catch (error: any) {
-        next(sendError(res, 500, error.message));
-    }
-
-}
-
-// get posts by category
-const getPostsbyCategory = async (req: Request, res: any, next: any) => {
-    const mainCategory = req.params.id;
-    try {
-        const getCatPosts = await PostModel.find({ category: mainCategory }).limit(30);
-        res.status(200).json({ success: true, data: getCatPosts, message: `got all ${mainCategory} posts` });
-    } catch (error: any) {
-        next(sendError(res, 500, error.message));
-    }
-}
-
-// get all posts
-const getRandomPosts = async (req: any, res: any, next: any) => {
-    const page = parseInt(req.query.page) - 1 || 0;
-    const skip = page * pageLimit;
-
-    try {
-        const getRandPosts = await PostModel.aggregate([{ $skip: skip }, { $limit: pageLimit }])
-        const getRandTotal = await PostModel.countDocuments()
-        res.status(200).json({ success: true, data: getRandPosts, message: 'got all random posts', page: page + 1, total: getRandTotal });
-    } catch (error: any) {
-        next(sendError(res, 500, error.message));
-    }
-}
-
-// get trending posts
-const getTrendingPosts = async (req: any, res: any, next: any) => {
-
-    const page = parseInt(req.query.page) - 1 || 0;
-    const skip = page * 5;
-
-
-    try {
-        const getTrendPosts = await PostModel.find().sort({ likesCount: -1 })
-        res.status(200).json({ success: true, data: getTrendPosts, message: 'got all trending posts' });
+        const getPosts = await PostModel.find({ owner: reqUId }).sort({ 'createdAt': -1 }).skip(skip).limit(pageLimit);
+        const getPostsTotal = await PostModel.find({ owner: reqUId }).countDocuments();
+        res.status(200).json({ success: true, data: getPosts, message: 'got user quotes successfully', page: page + 1, total: getPostsTotal });
     } catch (error: any) {
         next(sendError(res, 500, error.message));
     }
@@ -212,24 +156,22 @@ const getTrendingPosts = async (req: any, res: any, next: any) => {
 const getUserPostsInterest = async (req: any, res: any, next: any) => {
     const userId = req.uData.id;
     const page = parseInt(req.query.page) - 1 || 0;
-    const skip = page * 2;
-    console.log([skip, page]);
-
+    const skip = page * pageLimit;
     try {
         const allInterest: any = [];
         const user: any = await UserModel.findById(userId);
-        const userInterests = user.interest;
+        const userInterests = user.interests;
         userInterests.map((uIn: any) => {
-            allInterest.push(uIn.value)
+            allInterest.push(uIn)
         })
 
         if (userInterests?.length == 0) return next(res.status(404)
             .json({ message: `Please add at least one interest` }))
         setTimeout(async () => {
-            const interestPosts = await PostModel.find({ category: allInterest }).skip(skip).limit(2)
+            const interestPosts = await PostModel.find({ category: allInterest }).sort({ 'createdAt': -1 }).skip(skip).limit(pageLimit)
             const totalPosts = await PostModel.find({ category: allInterest }).countDocuments();
             res.status(200).json({
-                message: 'got interested posts', success: true, page: page + 1, total: totalPosts,
+                message: 'got interested quotes', success: true, page: page + 1, total: totalPosts,
                 data: interestPosts.flat().sort((a: any, b: any) => b.createdAt - a.createdAt)
             });
         }, 1500);
@@ -265,10 +207,6 @@ export {
     likeDislikePost,
     saveAndUnSavePost,
     getUserPosts,
-    getPostsByTags,
-    getPostsbyCategory,
-    getRandomPosts,
-    getTrendingPosts,
     getUserPostsInterest,
     searchPosts,
 }

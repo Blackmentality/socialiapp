@@ -45,6 +45,7 @@ const AllRoutes = () => {
       <Route element={<ForgotPassword />} path="forgot-password"></Route>
       <Route element={<ProtectRoutes />}>
         <Route element={<ProfilePage />} path="profile"></Route>
+        <Route element={<ProfilePage />} path="profile/:id"></Route>
         <Route element={<Home />} path="home"></Route>
         <Route element={<ViewPost />} path="view-post/:id"></Route>
         <Route element={<AddPost />} path="add-post"></Route>

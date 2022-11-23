@@ -17,9 +17,25 @@ import { useSelector, useDispatch } from "react-redux";
 import "./pages.scss";
 import axios from "axios";
 import { updateUser, assignUser } from "../redux/features/authSlice";
+import { useNavigate, useParams } from "react-router-dom";
+import { uniqBy } from "lodash";
 axios.defaults.withCredentials = true;
 
 const ProfilePage = () => {
+  const params = useParams();
+  const [isEmpty, setIsEmpty] = useState(false);
+  const [userPosts, setUserPosts]: any = useState([]);
+  const [savedPost, setSavedPost]: any = useState([]);
+  const [isMainUser, setIsMainUser] = useState(false);
+  const [userData, setUserData]: any = useState({});
+  const [userSavedPosts, setUserSavedPosts]: any = useState([]);
+  const [userInterets, setUserInterets]: any = useState([]);
+  const [savedCursor, setSavedCursor] = useState(0);
+  const navigate = useNavigate();
+  const [pageData, setPageData] = useState({
+    curentQuotePage: 1,
+    total: 0,
+  });
   const initialValue = {
     fullname: "",
     bio: "",
@@ -110,9 +126,107 @@ const ProfilePage = () => {
     }
   };
 
+  const getUserPosts = async (userId: string) => {
+    const data = {
+      params: {
+        page: pageData.curentQuotePage,
+      },
+    };
+    try {
+      const allPosts = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/user/${userId}`,
+        data
+      );
+      setPageData((prev) => ({ ...prev, total: allPosts.data.total }));
+      console.log(allPosts.data);
+
+      setUserPosts((prev: any) => [...prev, ...allPosts.data.data]);
+      if (allPosts.data.data.length === 0) {
+        setIsEmpty(true);
+      } else {
+        setIsEmpty(false);
+      }
+    } catch (error) {
+      showToast("An error occured", "error");
+    }
+  };
+
+  const getSavedPosts = async () => {
+    const currentData = savedPost.slice(savedCursor, savedCursor + 8);
+    if (currentData.length !== 0) {
+      currentData.map(async (quoteId: string) => {
+        try {
+          const posts = await axios.get(
+            `${process.env.REACT_APP_BASE_URL}/posts/saved/${quoteId}`
+          );
+          if (posts.data.data._id !== undefined) {
+            setUserSavedPosts((prev: any) => [...prev, posts.data.data]);
+          }
+        } catch (error) {
+          showToast("An error occured", "error");
+        }
+      });
+    }
+  };
+  const getUser = async () => {
+    try {
+      const profile = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/user/${params.id}`
+      );
+      const uData = profile.data.data;
+      console.log(uData);
+
+      setUserData(uData);
+      activateQuote();
+      if (params.id === user._id) {
+        setIsMainUser(true);
+      } else {
+        setIsMainUser(false);
+      }
+    } catch (error) {
+      showToast("An error occured", "error");
+      navigate("/home");
+    }
+  };
+
+  useEffect(() => {
+    if (active === "bookmark") {
+      getSavedPosts();
+    } else if (active === "posts") {
+      if (params.id !== undefined) {
+        getUserPosts(params.id);
+      } else {
+        getUserPosts(user._id);
+      }
+    }
+  }, [savedCursor, pageData.curentQuotePage, params]);
+
   useEffect(() => {
     setEditData({ fullname: user.fullname, bio: user.bio });
   }, []);
+
+  const activateQuote = () => {
+    const postNav: any = document.getElementById("postNav");
+    postNav?.click();
+  };
+
+  useEffect(() => {
+    setUserPosts([]);
+    if (params.id !== undefined) {
+      getUser();
+    } else {
+      setActive("quote");
+      setUserData(user);
+      setSavedPost(user.saved);
+      activateQuote();
+      if (userData._id !== "") {
+        setIsMainUser(true);
+      } else {
+        setIsMainUser(false);
+      }
+    }
+  }, [params]);
+
   return (
     <div>
       <div className="header-top">
@@ -123,7 +237,7 @@ const ProfilePage = () => {
           className="profile-top"
           style={{
             backgroundImage: `url(${
-              user.banner !== "" ? user.banner : banner
+              userData.banner !== "" ? userData.banner : banner
             })`,
           }}
         >
@@ -131,23 +245,27 @@ const ProfilePage = () => {
             <div className="d-flex justify-content-start align-items-end w-100">
               <img
                 alt=""
-                src={user.profile_img !== "" ? user.profile_img : profile}
+                src={
+                  userData.profile_img !== "" ? userData.profile_img : profile
+                }
               />
               <div className="d-flex justify-content-between w-100">
                 <div>
-                  <h6 className="text-capitalize m-0">{user.fullname}</h6>
-                  <span>@{user.username}</span>
-                  <span>{user.email}</span>
-                  <p>{user.bio}</p>
+                  <h6 className="text-capitalize m-0">{userData.fullname}</h6>
+                  <span>@{userData.username}</span>
+                  <span>{userData.email}</span>
+                  <p>{userData.bio}</p>
                 </div>
                 <div className="d-flex justify-content-end align-items-center prt-btn">
                   <div className="">
                     <span>Posts</span>
-                    <h6>{user.post_counts}</h6>
+                    <h6>{userData.post_counts}</h6>
                   </div>
-                  <Button className="edit-btn" onClick={handleShow}>
-                    Edit Profile
-                  </Button>
+                  {isMainUser && (
+                    <Button className="edit-btn" onClick={handleShow}>
+                      Edit Profile
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
@@ -161,7 +279,9 @@ const ProfilePage = () => {
             onSelect={handleChangeActiveNav}
           >
             <Nav.Item>
-              <Nav.Link eventKey="posts">Posts</Nav.Link>
+              <Nav.Link eventKey="posts" id="postNav">
+                Posts
+              </Nav.Link>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link eventKey="bookmark">Bookmark</Nav.Link>
@@ -169,7 +289,14 @@ const ProfilePage = () => {
           </Nav>
           {active === "posts" && (
             <div>
-              <MasonryLayout />
+              <MasonryLayout
+                posts={uniqBy(userPosts, "_id")}
+                total={pageData.total}
+                page={pageData}
+                setPageFunc={setPageData}
+                compType="adv"
+                type="quote"
+              />
             </div>
           )}
           {active === "bookmark" && (
