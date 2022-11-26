@@ -50,7 +50,9 @@ const HomeCard = ({ postData }: any) => {
           <span>|</span>
           <span>@{postAuthor !== null ? postAuthor.username : ""}</span>
           <span>|</span>
-          <span>{postData !== null ? postData.createdAt : ""}</span>
+          <span>
+            {postData !== null ? <TimeAgo date={postData.createdAt} /> : ""}
+          </span>
         </div>
       </div>
       <div className="post-card-mid">

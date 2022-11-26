@@ -32,7 +32,7 @@ const deleteComment = async (req: any, res: any, next: any) => {
 
         if (getComment?.owner === userId || getComment.author === userId) {
             await CommentModel.findOneAndDelete({ _id: commentId });
-            await PostModel.findOneAndUpdate({ _id: getComment.caption }, { $inc: { commentsCount: -1 } })
+            await PostModel.findOneAndUpdate({ _id: getComment.post }, { $inc: { commentsCount: -1 } })
             res.status(200).json({ message: 'Deleted Comment', success: true });
         } else {
             return next(sendError(res, 403, `You can only delete your comments`))

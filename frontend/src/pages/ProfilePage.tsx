@@ -21,6 +21,7 @@ import { updateUser, assignUser } from "../redux/features/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { uniqBy } from "lodash";
 import { showLoader, hideLoader } from "../redux/features/loaderSlice";
+import { EmptyData, SkeletonLayout } from "../components/UIHelpers";
 axios.defaults.withCredentials = true;
 
 const ProfilePage = () => {
@@ -93,7 +94,7 @@ const ProfilePage = () => {
 
   const handleEditSubmit = async (e: any) => {
     dispatch(showLoader);
-    const data = { ...editData };
+    const data = { ...editData, interests: userInterets };
     if (userInterets.length >= 3) {
       try {
         const editProfle = await axios.post(
@@ -277,9 +278,9 @@ const ProfilePage = () => {
                 }
               />
               <div className="d-flex justify-content-between w-100">
-                <div>
+                <div className="w-100">
                   <h6 className="text-capitalize m-0">{userData.fullname}</h6>
-                  <span>@{userData.username}</span>
+                  <span>@{userData.username} |</span>
                   <span>{userData.email}</span>
                   <p>{userData.bio}</p>
                 </div>
@@ -316,6 +317,19 @@ const ProfilePage = () => {
               </Nav.Link>
             </Nav.Item>
           </Nav>
+          {((userPosts.length === 0 && isEmpty === true) ||
+            (userSavedPosts.length === 0 && isEmpty === true)) && (
+            <EmptyData emptyType={active} />
+          )}
+          {userPosts.length === 0 && active === "posts" && isEmpty === false ? (
+            <SkeletonLayout />
+          ) : userSavedPosts.length === 0 &&
+            active === "bookmark" &&
+            isEmpty === false ? (
+            <SkeletonLayout />
+          ) : (
+            <></>
+          )}
           {active === "posts" && (
             <div>
               <MasonryLayout

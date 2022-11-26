@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Container, Button, Badge, FloatingLabel, Form } from "react-bootstrap";
-import { Header, PostActions } from "../components";
+import { CommentCard, Header, PostActions } from "../components";
 import { profile } from "../constant/assets";
 import "./pages.scss";
 import axios from "axios";
+import TimeAgo from "react-timeago";
+import { uniqBy } from "lodash";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 const ViewPost = () => {
@@ -16,6 +18,7 @@ const ViewPost = () => {
   });
   const [likes, setLikes] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
+  const [commentText, setCommentText] = useState("");
   const [allComments, setAllComments]: any = useState([]);
   const [postData, setPostData]: any = useState({ tags: [] });
   const [postAuthor, setPostAuthor]: any = useState(null);
@@ -25,6 +28,10 @@ const ViewPost = () => {
       appearance: toastType,
       autoDismiss: true,
     });
+  };
+
+  const viewProfile = () => {
+    navigate(`/profile/${postAuthor._id}`);
   };
 
   const getPost = async () => {
@@ -57,12 +64,41 @@ const ViewPost = () => {
         `${process.env.REACT_APP_BASE_URL}/comment/${id}`,
         data
       );
+      console.log(allCom.data.data);
+
       setAllComments((prev: any) => [...prev, ...allCom.data.data]);
       setPageData((prev) => ({ ...prev, total: allCom.data.total }));
     } catch (error) {
       showToast("An error occured", "error");
     }
   };
+
+  const handleCommentText = (e: any) => {
+    setCommentText(e.target.value);
+  };
+
+  const addQuoteComment = async () => {
+    if (commentText.length >= 3) {
+      const data = {
+        comment: commentText,
+      };
+      try {
+        const comment = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/comment/${id}`,
+          data
+        );
+        setAllComments([comment.data.data, ...allComments]);
+        setCommentText("");
+        showToast("Comment submitted successfully", "success");
+        setCommentCount(commentCount + 1);
+      } catch (error) {
+        showToast("An error occured", "error");
+      }
+    } else {
+      showToast("Please add comment first!", "error");
+    }
+  };
+
   useEffect(() => {
     getComments();
   }, [pageData.currentComPage]);
@@ -80,16 +116,32 @@ const ViewPost = () => {
         <div className="viewp-main">
           <div className="post-card">
             <div className="post-card-top d-flex justify-content-start align-items-center">
-              <img src={profile} alt="" />
+              {postAuthor !== null && (
+                <img
+                  onClick={viewProfile}
+                  src={
+                    postAuthor.profile_img !== ""
+                      ? postAuthor.profile_img
+                      : profile
+                  }
+                  alt="profile-img"
+                />
+              )}
               <div>
-                <h6 className="m-0 text-capitalize">
+                <h6 className="m-0 text-capitalize" onClick={viewProfile}>
                   {postAuthor !== null ? postAuthor.fullname : ""}
                 </h6>
                 <Badge>{postData.category}</Badge>
                 <span>|</span>
                 <span>@{postAuthor !== null ? postAuthor.username : ""}</span>
                 <span>|</span>
-                <span>{postData !== null ? postData.createdAt : ""}</span>
+                <span>
+                  {postData !== null ? (
+                    <TimeAgo date={postData.createdAt} />
+                  ) : (
+                    ""
+                  )}
+                </span>
               </div>
             </div>
             <div className="post-card-mid">
@@ -112,19 +164,15 @@ const ViewPost = () => {
               <div className="w-50 d-flex justify-content-end align-items-center">
                 <span>{postData.likesCount} Likes</span>
                 <span>|</span>
-                <span>{postData.commentsCount} Comments</span>
+                <span>{commentCount} Comments</span>
               </div>
             </div>
             <hr />
             <div className="post-comment mt-2">
               <h5 className="mb-2">Comments</h5>
-              <div className="pc-card d-flex justify-content-start">
-                <img src={profile} alt="" />
-                <div>
-                  <h6 className="mb-0">@Babbie</h6>
-                  <p>Lorem ipsum dolor sit amet consectetur.</p>
-                </div>
-              </div>
+              {uniqBy(allComments, "_id").map((comment: any) => (
+                <CommentCard commentData={comment} key={comment._id} />
+              ))}
             </div>
             <div className="comment-box mt-2">
               <FloatingLabel
@@ -134,13 +182,20 @@ const ViewPost = () => {
               >
                 <Form.Control
                   as="textarea"
+                  value={commentText}
+                  onChange={handleCommentText}
                   style={{ height: "100px" }}
                   type="text"
                   placeholder="Enter your bio.."
                 />
               </FloatingLabel>
               <div className="d-flex justify-content-end">
-                <Button className="btn-comment" id="comb-btn">
+                <Button
+                  className="btn-comment"
+                  id="comb-btn"
+                  onClick={addQuoteComment}
+                  disabled={commentText.length < 3}
+                >
                   Comment
                 </Button>
               </div>

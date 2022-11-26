@@ -9,20 +9,20 @@ const EmptyData = ({ emptyType }: any) => {
   return (
     <div className="emptyContainer">
       <div className="emptyCard">
-        {emptyType === "post" && <h6>No posts yet😔</h6>}
-        {emptyType === "saved" && <h6>No saved posts yet😔</h6>}
+        {emptyType === "posts" && <h6>No posts yet😔</h6>}
+        {emptyType === "bookmark" && <h6>No saved posts yet😔</h6>}
         {emptyType === "account" && (
           <h6>
             No accounts found 😔 <br />
             Search again...
           </h6>
         )}
-        {(emptyType === "post" || emptyType === "saved") && (
+        {(emptyType === "posts" || emptyType === "bookmark") && (
           <div className="mb-2">
             <span>Click the button below to: 👇🏽</span>
           </div>
         )}
-        {emptyType === "post" && (
+        {emptyType === "posts" && (
           <Button
             className="no-border no-box-shadow"
             onClick={() => navigate("/add-post")}
@@ -30,7 +30,7 @@ const EmptyData = ({ emptyType }: any) => {
             Add post
           </Button>
         )}
-        {emptyType === "saved" && (
+        {emptyType === "bookmark" && (
           <Button
             className="no-border no-box-shadow"
             onClick={() => navigate("/home")}

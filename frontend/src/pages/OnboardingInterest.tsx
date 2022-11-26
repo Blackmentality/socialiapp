@@ -25,7 +25,7 @@ const OnboardingInterest = () => {
   const [selectedInts, setSelectedInts]: any = useState([]);
 
   const handleSelect = (interest: any) => {
-    const allInts = selectedInts;
+    const allInts = [...selectedInts];
     const findIndexInt = allInts.findIndex((a: any) => a === interest.name);
     console.log(findIndexInt);
 
@@ -33,34 +33,41 @@ const OnboardingInterest = () => {
       allInts.push(interest.name);
       setSelectedInts(allInts);
     } else {
-      allInts.splice(findIndexInt, 1);
+      setSelectedInts(allInts.filter((a) => a !== interest.name));
     }
   };
 
   const saveInterests = async () => {
     const data = { interests: selectedInts };
-    try {
-      const editProfile = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/user/edit-profile/${user._id}`,
-        data
-      );
-      dispatch(assignUser(editProfile.data.data));
-      localStorage.setItem(
-        "sociali_user",
-        JSON.stringify(editProfile.data.data)
-      );
-      showToast("Profile updated successfully!", "success");
-      setTimeout(() => {
-        navigate("/home");
-        showToast(
-          `Hi ${editProfile.data.data.fullname} \n Welcome to Sociali`,
-          "success"
+    if (selectedInts.length >= 3) {
+      try {
+        const editProfile = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/user/edit-profile/${user._id}`,
+          data
         );
-      }, 1000);
-    } catch (error: any) {
-      setTimeout(() => {
-        showToast(`An error occured!\n ${error.message}\n Try again!`, "error");
-      }, 2000);
+        dispatch(assignUser(editProfile.data.data));
+        localStorage.setItem(
+          "sociali_user",
+          JSON.stringify(editProfile.data.data)
+        );
+        showToast("Profile updated successfully!", "success");
+        setTimeout(() => {
+          navigate("/home");
+          showToast(
+            `Hi ${editProfile.data.data.fullname} \n Welcome to Sociali`,
+            "success"
+          );
+        }, 1000);
+      } catch (error: any) {
+        setTimeout(() => {
+          showToast(
+            `An error occured!\n ${error.message}\n Try again!`,
+            "error"
+          );
+        }, 2000);
+      }
+    } else {
+      showToast("Interest must be at least 3", "warning");
     }
   };
 
@@ -90,9 +97,9 @@ const OnboardingInterest = () => {
                   <div
                     className="interest-card"
                     style={{
-                      backgroundColor: selectedInts.includes(interest.name)
-                        ? "#000"
-                        : "",
+                      border: selectedInts.includes(interest.name)
+                        ? "2px solid #000"
+                        : "none",
                     }}
                   >
                     <img src={interest.img} height={50} alt="" />

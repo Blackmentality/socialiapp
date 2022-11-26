@@ -9,8 +9,8 @@ const CommentSchema = new Schema({
         type: String,
         required: true
     },
-    caption: {
-        ref: 'quote',
+    post: {
+        ref: 'Post',
         type: String,
         required: true
     },
