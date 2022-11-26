@@ -4,7 +4,9 @@
   padding: 3%;
   box-shadow: 0 4px 16px rgb(0 0 0 / 16%);
   border-radius: 10px;
-
+  hr {
+    border-top: 1px solid #999;
+  }
   .post-card-bot {
     .btn {
       background-color: transparent;
@@ -19,6 +21,9 @@
   }
 
   .post-card-top {
+    h6 {
+      font-family: "pjs";
+    }
     div {
       width: 100%;
       margin-left: 2%;
@@ -106,9 +111,34 @@
     fill: #999;
   }
 }
+.postac-active {
+  svg {
+    fill: #000;
+  }
+}
 
 .likedActive {
   svg {
     fill: #f00 !important;
+  }
+}
+
+.loader-main {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 1;
+}
+
+.post-comment {
+  h5 {
+    font-size: 1.05rem;
+    font-family: "pjs";
+  }
+}
+
+.pc-card {
+  h6 {
+    font-family: pjs;
   }
 }

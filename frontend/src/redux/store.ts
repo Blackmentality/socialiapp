@@ -1,5 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { authSlice } from './features';
+import { authSlice, loaderSlice } from './features';
 import storage from 'redux-persist/lib/storage';
 import { persistReducer, persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
@@ -11,6 +11,7 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, combineReducers({
     auth: authSlice,
+    loader: loaderSlice,
 }));
 export const store = configureStore({
     reducer: persistedReducer,

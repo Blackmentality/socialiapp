@@ -4,14 +4,27 @@ import { Form, Row, Col, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import { useToasts } from "react-toast-notifications";
+import { showLoader, hideLoader } from "../redux/features/loaderSlice";
+import { assignUser } from "../redux/features/authSlice";
 
 const Register = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { addToast } = useToasts();
   const goToInterest = () => {
     navigate("/onboarding");
   };
+
+  const openLoader = () => {
+    dispatch(showLoader());
+  };
+
+  const closeLoader = () => {
+    dispatch(hideLoader());
+  };
+
   const showToast = (message: string, toastType: any) => {
     addToast(message, {
       appearance: toastType,
@@ -31,8 +44,7 @@ const Register = () => {
   };
 
   const registerUser = async () => {
-    console.log("click");
-
+    openLoader();
     const data = {
       fullname: `${registerData.fname} ${registerData.lname}`,
       email: `${registerData.email}`,
@@ -49,12 +61,16 @@ const Register = () => {
           `${process.env.REACT_APP_BASE_URL}/auth/register`,
           data
         );
-        console.log(registerRes.data.data);
+        dispatch(assignUser(registerRes.data.data));
+        closeLoader();
+        goToInterest();
         showToast("Registered successfully!", "success");
       } catch (error: any) {
+        closeLoader();
         showToast(error.response.data.message, "error");
       }
     } else {
+      closeLoader();
       showToast("Please fill all the input fields!", "warning");
     }
   };

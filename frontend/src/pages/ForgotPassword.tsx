@@ -4,13 +4,22 @@ import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { showLoader, hideLoader } from "../redux/features/loaderSlice";
 import { useToasts } from "react-toast-notifications";
 
 axios.defaults.withCredentials = true;
 
 const ForgotPassword = () => {
+  const dispatch = useDispatch();
   const { addToast } = useToasts();
+  const openLoader = () => {
+    dispatch(showLoader());
+  };
 
+  const closeLoader = () => {
+    dispatch(hideLoader());
+  };
   const showToast = (message: string, toastType: any) => {
     addToast(message, {
       appearance: toastType,
@@ -19,6 +28,7 @@ const ForgotPassword = () => {
   };
   const [email, setEmail] = useState("");
   const forgotUser = async () => {
+    openLoader();
     const data = {
       email: email,
     };
@@ -28,11 +38,14 @@ const ForgotPassword = () => {
           `${process.env.REACT_APP_BASE_URL}/auth/forgot-password`,
           data
         );
+        closeLoader();
         showToast("Password reset instructions sent to your email!", "success");
       } catch (error: any) {
+        closeLoader();
         showToast(error.response.data.message, "error");
       }
     } else {
+      closeLoader();
       showToast("Please fill all the input fields!", "warning");
     }
   };

@@ -101,18 +101,21 @@ const ViewPost = () => {
               </div>
             </div>
             <div className="post-card-bot d-flex justify-content-between align-items-center">
-              <PostActions
-                id={postData._id}
-                postData={postData}
-                likesFunc={setLikes}
-                allLikes={likes}
-              />
+              {postData.likes !== undefined && (
+                <PostActions
+                  id={postData._id}
+                  postData={postData}
+                  likesFunc={setLikes}
+                  allLikes={likes}
+                />
+              )}
               <div className="w-50 d-flex justify-content-end align-items-center">
                 <span>{postData.likesCount} Likes</span>
                 <span>|</span>
                 <span>{postData.commentsCount} Comments</span>
               </div>
             </div>
+            <hr />
             <div className="post-comment mt-2">
               <h5 className="mb-2">Comments</h5>
               <div className="pc-card d-flex justify-content-start">

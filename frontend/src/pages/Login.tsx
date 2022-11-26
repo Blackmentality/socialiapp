@@ -7,12 +7,21 @@ import axios from "axios";
 import { useToasts } from "react-toast-notifications";
 import { useDispatch } from "react-redux";
 import { assignUser } from "../redux/features/authSlice";
+import { showLoader, hideLoader } from "../redux/features/loaderSlice";
 
 axios.defaults.withCredentials = true;
 const Login = () => {
   const navigate = useNavigate();
   const { addToast } = useToasts();
   const dispatch = useDispatch();
+
+  const openLoader = () => {
+    dispatch(showLoader());
+  };
+
+  const closeLoader = () => {
+    dispatch(hideLoader());
+  };
 
   const showToast = (message: string, toastType: any) => {
     addToast(message, {
@@ -32,6 +41,7 @@ const Login = () => {
   };
 
   const loginUser = async () => {
+    openLoader();
     if (loginData.email !== "" && loginData.password !== "") {
       try {
         const loginRes = await axios.post(
@@ -45,17 +55,21 @@ const Login = () => {
         dispatch(assignUser(loginRes.data.data));
         if (loginRes.data.data.interests.length < 3) {
           navigate("/onboarding");
+          closeLoader();
         } else {
           navigate("/home");
+          closeLoader();
           showToast(
             `Hi ${loginRes.data.data.fullname} \n Welcome to Sociali`,
             "success"
           );
         }
       } catch (error: any) {
+        closeLoader();
         showToast(error.response.data.message, "error");
       }
     } else {
+      closeLoader();
       showToast("Please fill all the input fields!", "warning");
     }
   };

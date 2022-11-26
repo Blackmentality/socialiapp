@@ -3,10 +3,11 @@ import {
   BsFillChatQuoteFill,
   BsShare,
   BsBookmark,
+  BsFillBookmarkFill,
 } from "react-icons/bs";
 import "./components.scss";
 import { Button, ButtonGroup, Popover, OverlayTrigger } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ShareButtons from "./ShareButtons";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -16,6 +17,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
   const dispatch = useDispatch();
+  const urlParams = useParams();
   const [likedPost, setLikedPost] = useState(false);
   const [saveDisable, setSaveDisable] = useState(false);
   const [likeDisable, setLikeDisable] = useState(false);
@@ -43,7 +45,10 @@ const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
   }, []);
 
   const goToComment = () => {
-    if (id !== undefined) {
+    console.log("clicked");
+    console.log(id);
+
+    if (urlParams.id !== undefined) {
       const comBox: any = document.getElementById("comment-box");
       const comBtn = document.getElementById("comb-btn");
       comBtn?.scrollIntoView();
@@ -96,9 +101,12 @@ const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
     if (userData._id !== postData.owner) {
       if (isSaved === false) {
         setSaveDisable(true);
+        showToast(`Post saved successfully`, "success");
         setTimeout(() => {
           setSaveDisable(false);
         }, 3000);
+      } else {
+        showToast(`Post unsaved successfully`, "success");
       }
       try {
         axios.put(`${process.env.REACT_APP_BASE_URL}/posts/save/${id}`);
@@ -140,9 +148,13 @@ const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
             <BsShare />
           </Button>
         </OverlayTrigger>
-        <Button disabled={saveDisable} onClick={toggleSaved}>
+        <Button
+          disabled={saveDisable}
+          onClick={toggleSaved}
+          className={`${isSaved ? "postac-active" : ""}`}
+        >
           {isSaved ? (
-            <BsBookmark style={{ color: "#000" }} />
+            <BsFillBookmarkFill style={{ color: "#000 " }} />
           ) : (
             <BsBookmark style={{ color: "#999" }} />
           )}

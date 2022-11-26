@@ -7,6 +7,7 @@ import {
   FloatingLabel,
   Form,
   Row,
+  Badge,
   Col,
 } from "react-bootstrap";
 import { Header, MasonryLayout } from "../components";
@@ -19,6 +20,7 @@ import axios from "axios";
 import { updateUser, assignUser } from "../redux/features/authSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { uniqBy } from "lodash";
+import { showLoader, hideLoader } from "../redux/features/loaderSlice";
 axios.defaults.withCredentials = true;
 
 const ProfilePage = () => {
@@ -53,6 +55,18 @@ const ProfilePage = () => {
     setEditData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const selectInterest = (interest: string) => {
+    const uInterest = [...userInterets];
+    const isSelected = userInterets.findIndex((a: string) => a === interest);
+    console.log(isSelected);
+
+    if (isSelected !== -1) {
+      setUserInterets(uInterest.filter((a) => a !== interest));
+    } else {
+      setUserInterets((prev: any) => [...prev, interest]);
+    }
+  };
+
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.auth.user);
   const [show, setShow] = useState(false);
@@ -78,23 +92,30 @@ const ProfilePage = () => {
   };
 
   const handleEditSubmit = async (e: any) => {
-    // dispatch(showLoader);
+    dispatch(showLoader);
     const data = { ...editData };
-    try {
-      const editProfle = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/user/edit-profile/${user._id}`,
-        data
-      );
-      dispatch(assignUser(editProfle.data.data));
-      // dispatch(hideLoader);
-      setTimeout(() => {
-        showToast("Profile updated successfully!", "success");
-      }, 1000);
-    } catch (error: any) {
-      setTimeout(() => {
-        showToast(`An error occured!\n ${error.message}\n Try again!`, "error");
-      }, 2000);
-      // dispatch(hideLoader);
+    if (userInterets.length >= 3) {
+      try {
+        const editProfle = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/user/edit-profile/${user._id}`,
+          data
+        );
+        dispatch(assignUser(editProfle.data.data));
+        dispatch(hideLoader);
+        setTimeout(() => {
+          showToast("Profile updated successfully!", "success");
+        }, 1000);
+      } catch (error: any) {
+        setTimeout(() => {
+          showToast(
+            `An error occured!\n ${error.message}\n Try again!`,
+            "error"
+          );
+        }, 2000);
+        dispatch(hideLoader);
+      }
+    } else {
+      showToast("Interest must be at least 3", "warning");
     }
   };
 
@@ -152,12 +173,11 @@ const ProfilePage = () => {
   };
 
   const getSavedPosts = async () => {
-    const currentData = savedPost.slice(savedCursor, savedCursor + 8);
-    if (currentData.length !== 0) {
-      currentData.map(async (quoteId: string) => {
+    if (savedPost.length !== 0) {
+      savedPost.map(async (quoteId: string) => {
         try {
           const posts = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/posts/saved/${quoteId}`
+            `${process.env.REACT_APP_BASE_URL}/posts/${quoteId}`
           );
           if (posts.data.data._id !== undefined) {
             setUserSavedPosts((prev: any) => [...prev, posts.data.data]);
@@ -191,15 +211,18 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (active === "bookmark") {
+      console.log(savedPost);
       getSavedPosts();
     } else if (active === "posts") {
       if (params.id !== undefined) {
         getUserPosts(params.id);
       } else {
         getUserPosts(user._id);
+        setUserInterets(user.interests);
+        setSavedPost(user.saved);
       }
     }
-  }, [savedCursor, pageData.curentQuotePage, params]);
+  }, [savedCursor, pageData.curentQuotePage, params, active]);
 
   useEffect(() => {
     setEditData({ fullname: user.fullname, bio: user.bio });
@@ -219,6 +242,10 @@ const ProfilePage = () => {
       setUserData(user);
       setSavedPost(user.saved);
       activateQuote();
+      setUserInterets(user.interests);
+      setSavedPost(user.saved);
+      console.log(user.interests);
+
       if (userData._id !== "") {
         setIsMainUser(true);
       } else {
@@ -284,7 +311,9 @@ const ProfilePage = () => {
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="bookmark">Bookmark</Nav.Link>
+              <Nav.Link eventKey="bookmark">
+                Bookmark <Badge bg="dark">{savedPost.length}</Badge>
+              </Nav.Link>
             </Nav.Item>
           </Nav>
           {active === "posts" && (
@@ -301,7 +330,14 @@ const ProfilePage = () => {
           )}
           {active === "bookmark" && (
             <div>
-              <MasonryLayout />
+              <MasonryLayout
+                posts={uniqBy(userSavedPosts, "_id")}
+                total={savedPost.length}
+                page={pageData}
+                setPageFunc={setPageData}
+                compType="adv"
+                type="quote"
+              />
             </div>
           )}
         </div>
@@ -382,14 +418,27 @@ const ProfilePage = () => {
                   <h6>Interests</h6>
                 </div>
                 <Row>
-                  {interests.map((interest, index) => (
-                    <Col lg={4} key={index} className="gap-2 mb-4 text-center">
-                      <div className="interest-card">
-                        <img src={interest.img} height={50} alt="" />
-                        <h6>{interest.name}</h6>
-                      </div>
-                    </Col>
-                  ))}
+                  {userInterets.length !== 0 &&
+                    interests.map((interest, index) => (
+                      <Col
+                        lg={4}
+                        key={index}
+                        className="gap-2 mb-4 text-center"
+                      >
+                        <div
+                          className="interest-card"
+                          onClick={() => selectInterest(interest.name)}
+                          style={{
+                            border: userInterets.includes(interest.name)
+                              ? "2px solid #000"
+                              : "none",
+                          }}
+                        >
+                          <img src={interest.img} height={50} alt="" />
+                          <h6>{interest.name}</h6>
+                        </div>
+                      </Col>
+                    ))}
                 </Row>
               </div>
             </div>

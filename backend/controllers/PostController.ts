@@ -145,7 +145,7 @@ const getUserPosts = async (req: any, res: any, next: any) => {
 
         const getPosts = await PostModel.find({ owner: reqUId }).sort({ 'createdAt': -1 }).skip(skip).limit(pageLimit);
         const getPostsTotal = await PostModel.find({ owner: reqUId }).countDocuments();
-        res.status(200).json({ success: true, data: getPosts, message: 'got user quotes successfully', page: page + 1, total: getPostsTotal });
+        res.status(200).json({ success: true, data: getPosts, message: 'got user posts successfully', page: page + 1, total: getPostsTotal });
     } catch (error: any) {
         next(sendError(res, 500, error.message));
     }
@@ -171,7 +171,7 @@ const getUserPostsInterest = async (req: any, res: any, next: any) => {
             const interestPosts = await PostModel.find({ category: allInterest }).sort({ 'createdAt': -1 }).skip(skip).limit(pageLimit)
             const totalPosts = await PostModel.find({ category: allInterest }).countDocuments();
             res.status(200).json({
-                message: 'got interested quotes', success: true, page: page + 1, total: totalPosts,
+                message: 'got interested posts', success: true, page: page + 1, total: totalPosts,
                 data: interestPosts.flat().sort((a: any, b: any) => b.createdAt - a.createdAt)
             });
         }, 1500);
@@ -184,14 +184,22 @@ const getUserPostsInterest = async (req: any, res: any, next: any) => {
 
 const searchPosts = async (req: any, res: any, next: any) => {
     const searchQuery = req.query.q;
+    const userId = req.uData.id;
     const page = parseInt(req.query.page) - 1 || 0;
     const skip = page * 10;
     try {
+        const allInterest: any = [];
+        const user: any = await UserModel.findById(userId);
+        const userInterests = user.interests;
+        userInterests.map((uIn: any) => {
+            allInterest.push(uIn)
+        })
+
         if (searchQuery === '') return next(res.status(404)
             .json({ message: `Invalid search query` }));
 
-        const posts = await PostModel.find({ quote: { $regex: searchQuery, $options: 'i' } }).skip(skip).limit(10);
-        const postsTotal = await PostModel.find({ quote: { $regex: searchQuery, $options: 'i' } }).countDocuments();
+        const posts = await PostModel.find({ caption: { $regex: searchQuery, $options: 'i' }, category: allInterest }).skip(skip).limit(10);
+        const postsTotal = await PostModel.find({ caption: { $regex: searchQuery, $options: 'i' } }).countDocuments();
         res.status(200).json({ data: posts, messages: 'got search posts', success: true, total: postsTotal, page: page + 1 });
     } catch (error) {
 

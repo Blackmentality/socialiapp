@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useToasts } from "react-toast-notifications";
 import { uniqBy } from "lodash";
+import { EmptyData, SkeletonLayout } from "../components/UIHelpers";
 
 const Home = () => {
   const { addToast } = useToasts();
@@ -64,14 +65,20 @@ const Home = () => {
       </div>
       <div className="home-main mt-3">
         <Container>
-          <MasonryLayout
-            posts={uniqBy(fypData, "_id")}
-            total={pageData.totalFypPage}
-            page={pageData}
-            setPageFunc={setPageData}
-            compType="expl"
-            type="quote"
-          />
+          {fypData.length === 0 && isEmpty === true && (
+            <EmptyData emptyType="post" />
+          )}
+          {fypData.length === 0 && isEmpty === false && <SkeletonLayout />}
+          {fypData.length !== 0 && (
+            <MasonryLayout
+              posts={uniqBy(fypData, "_id")}
+              total={pageData.totalFypPage}
+              page={pageData}
+              setPageFunc={setPageData}
+              compType="expl"
+              type="quote"
+            />
+          )}
         </Container>
       </div>
     </div>
