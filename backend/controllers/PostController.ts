@@ -187,6 +187,7 @@ const searchPosts = async (req: any, res: any, next: any) => {
     const userId = req.uData.id;
     const page = parseInt(req.query.page) - 1 || 0;
     const skip = page * 10;
+
     try {
         const allInterest: any = [];
         const user: any = await UserModel.findById(userId);

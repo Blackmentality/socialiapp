@@ -5,14 +5,14 @@ import verifyToken from "../middleware/VerifyToken";
 
 const router = Router();
 
+// search posts
+router.get('/search', verifyToken, searchPosts);
 // get all posts user
 router.get('/user/:id', verifyToken, getUserPosts);
 
 // get for you posts with (selected categories )
 router.get('/interest', verifyToken, getUserPostsInterest);
 
-// search posts
-router.get('/search', searchPosts);
 
 // get a posts
 router.get('/:id', getPost);

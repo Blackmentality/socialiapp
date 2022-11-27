@@ -1,5 +1,5 @@
 import { Navbar, Container, Nav, Form, Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logo } from "../constant/assets";
 import { SiAddthis } from "react-icons/si";
 import { AiFillHome } from "react-icons/ai";
@@ -10,12 +10,15 @@ import { useDispatch } from "react-redux";
 import { useToasts } from "react-toast-notifications";
 import axios from "axios";
 import { unAssignUser } from "../redux/features/authSlice";
+import { useState, useEffect } from "react";
+import { DebounceInput } from "react-debounce-input";
 
-const Header = () => {
+const Header = ({ searchFunc }: any) => {
   const dispatch = useDispatch();
+  const [search, setSearchText] = useState("");
   const { addToast } = useToasts();
   const navigate = useNavigate();
-
+  const location = useLocation();
   const handleLogout = async () => {
     try {
       await axios.get(`${process.env.REACT_APP_BASE_URL}/auth/logout`);
@@ -33,6 +36,14 @@ const Header = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (search !== "" && location.pathname === "/home") {
+      searchFunc(search);
+    } else if (search !== "" && location.pathname !== "/home") {
+      navigate("/home");
+    }
+  }, [search]);
 
   return (
     <Navbar bg="light" expand="lg">
@@ -68,13 +79,15 @@ const Header = () => {
             </Nav.Link>
           </Nav>
           <Form className="d-flex">
-            <Form.Control
-              type="search"
+            <DebounceInput
               placeholder="Search for post..."
-              className="me-2"
-              aria-label="Search"
+              aria-label="search"
+              aria-describedby="basic-addon1"
+              className="form-control"
+              minLength={1}
+              debounceTimeout={1500}
+              onChange={(e: any) => setSearchText(e.target.value)}
             />
-            <Button className="search-btn">Search</Button>
           </Form>
         </Navbar.Collapse>
       </Container>

@@ -16,8 +16,10 @@ const Home = () => {
   };
   const [isEmpty, setIsEmpty] = useState(false);
   const [fypData, setFypData]: any = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const [pageData, setPageData]: any = useState({
     fypPage: 1,
+    searchPage: 1,
     totalFypPage: 0,
   });
 
@@ -54,14 +56,54 @@ const Home = () => {
     }
   };
 
+  const getSearchPost = async () => {
+    setFypData([]);
+    const data = {
+      params: {
+        q: searchInput,
+        page: fypData.length === 0 ? 1 : pageData.searchPage,
+      },
+    };
+    try {
+      const searchRes = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/search`,
+        data
+      );
+      setFypData(searchRes.data.data);
+      setPageData((prev: any) => ({
+        ...prev,
+        totalPostsDocs: searchRes.data.total,
+      }));
+      if (searchRes.data.data.length === 0) {
+        setIsEmpty(true);
+      } else {
+        setIsEmpty(false);
+      }
+    } catch (error: any) {
+      console.log(error);
+
+      showToast("An error occured", "error");
+    }
+  };
+
   useEffect(() => {
     getUserInterests();
   }, []);
 
+  useEffect(() => {
+    if (searchInput !== "") {
+      getSearchPost();
+    } else {
+      setFypData([]);
+      getUserInterests();
+    }
+    console.log(searchInput);
+  }, [searchInput]);
+
   return (
     <div>
       <div className="header-top">
-        <Header />
+        <Header searchFunc={setSearchInput} />
       </div>
       <div className="home-main mt-3">
         <Container>
