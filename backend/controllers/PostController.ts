@@ -3,7 +3,7 @@ import UserModel from '../models/User';
 import { Request, Response } from 'express';
 import PostModel from '../models/Post';
 
-const pageLimit = 20;
+const pageLimit = 50;
 
 const generateImg = (img_file: any) => {
     const encoded = img_file?.buffer.toString('base64');
@@ -186,7 +186,7 @@ const searchPosts = async (req: any, res: any, next: any) => {
     const searchQuery = req.query.q;
     const userId = req.uData.id;
     const page = parseInt(req.query.page) - 1 || 0;
-    const skip = page * 10;
+    const skip = page * 30;
 
     try {
         const allInterest: any = [];

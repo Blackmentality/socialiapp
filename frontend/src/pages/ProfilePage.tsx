@@ -59,7 +59,6 @@ const ProfilePage = () => {
   const selectInterest = (interest: string) => {
     const uInterest = [...userInterets];
     const isSelected = userInterets.findIndex((a: string) => a === interest);
-    console.log(isSelected);
 
     if (isSelected !== -1) {
       setUserInterets(uInterest.filter((a) => a !== interest));
@@ -160,7 +159,6 @@ const ProfilePage = () => {
         data
       );
       setPageData((prev) => ({ ...prev, total: allPosts.data.total }));
-      console.log(allPosts.data);
 
       setUserPosts((prev: any) => [...prev, ...allPosts.data.data]);
       if (allPosts.data.data.length === 0) {
@@ -175,6 +173,7 @@ const ProfilePage = () => {
 
   const getSavedPosts = async () => {
     if (savedPost.length !== 0) {
+      setIsEmpty(false);
       savedPost.map(async (quoteId: string) => {
         try {
           const posts = await axios.get(
@@ -187,6 +186,8 @@ const ProfilePage = () => {
           showToast("An error occured", "error");
         }
       });
+    } else {
+      setIsEmpty(true);
     }
   };
   const getUser = async () => {
@@ -195,7 +196,6 @@ const ProfilePage = () => {
         `${process.env.REACT_APP_BASE_URL}/user/${params.id}`
       );
       const uData = profile.data.data;
-      console.log(uData);
 
       setUserData(uData);
       activateQuote();
@@ -212,7 +212,6 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (active === "bookmark") {
-      console.log(savedPost);
       getSavedPosts();
     } else if (active === "posts") {
       if (params.id !== undefined) {
@@ -245,7 +244,6 @@ const ProfilePage = () => {
       activateQuote();
       setUserInterets(user.interests);
       setSavedPost(user.saved);
-      console.log(user.interests);
 
       if (userData._id !== "") {
         setIsMainUser(true);

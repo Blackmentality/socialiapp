@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import { useToasts } from "react-toast-notifications";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { assignUser } from "../redux/features/authSlice";
 axios.defaults.withCredentials = true;
 
 const OnboardingInterest = () => {
   const navigate = useNavigate();
+  const userData = useSelector((state: any) => state.auth.user);
   const [user, setUser]: any = useState({});
   const { addToast } = useToasts();
   const dispatch = useDispatch();
@@ -27,7 +28,6 @@ const OnboardingInterest = () => {
   const handleSelect = (interest: any) => {
     const allInts = [...selectedInts];
     const findIndexInt = allInts.findIndex((a: any) => a === interest.name);
-    console.log(findIndexInt);
 
     if (findIndexInt === -1) {
       allInts.push(interest.name);
@@ -42,7 +42,7 @@ const OnboardingInterest = () => {
     if (selectedInts.length >= 3) {
       try {
         const editProfile = await axios.post(
-          `${process.env.REACT_APP_BASE_URL}/user/edit-profile/${user._id}`,
+          `${process.env.REACT_APP_BASE_URL}/user/edit-profile/${userData._id}`,
           data
         );
         dispatch(assignUser(editProfile.data.data));

@@ -38,7 +38,7 @@ const Header = ({ searchFunc }: any) => {
   };
 
   useEffect(() => {
-    if (search !== "" && location.pathname === "/home") {
+    if (location.pathname === "/home") {
       searchFunc(search);
     } else if (search !== "" && location.pathname !== "/home") {
       navigate("/home");

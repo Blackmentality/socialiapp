@@ -5,9 +5,11 @@ import { Header } from "../components";
 import interests from "../constant/interest";
 import { useToasts } from "react-toast-notifications";
 import "./pages.scss";
+import { useNavigate } from "react-router-dom";
 axios.defaults.withCredentials = true;
 
 const AddPost = () => {
+  const navigate = useNavigate();
   const { addToast } = useToasts();
 
   const showToast = (message: string, toastType: any) => {
@@ -51,6 +53,7 @@ const AddPost = () => {
         }
       );
       showToast(`Post created successfully!`, "success");
+      navigate("/home");
     } catch (error: any) {
       setTimeout(() => {
         showToast(`An error occured!\n ${error.message}\n Try again!`, "error");
