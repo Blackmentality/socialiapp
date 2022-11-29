@@ -77,7 +77,7 @@ const ViewPost = () => {
     setCommentText(e.target.value);
   };
 
-  const addQuoteComment = async () => {
+  const addPostComment = async () => {
     if (commentText.length >= 3) {
       const data = {
         comment: commentText,
@@ -193,7 +193,7 @@ const ViewPost = () => {
                 <Button
                   className="btn-comment"
                   id="comb-btn"
-                  onClick={addQuoteComment}
+                  onClick={addPostComment}
                   disabled={commentText.length < 3}
                 >
                   Comment

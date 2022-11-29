@@ -36,7 +36,7 @@ const ProfilePage = () => {
   const [savedCursor, setSavedCursor] = useState(0);
   const navigate = useNavigate();
   const [pageData, setPageData] = useState({
-    curentQuotePage: 1,
+    curentPostPage: 1,
     total: 0,
   });
   const initialValue = {
@@ -150,7 +150,7 @@ const ProfilePage = () => {
   const getUserPosts = async (userId: string) => {
     const data = {
       params: {
-        page: pageData.curentQuotePage,
+        page: pageData.curentPostPage,
       },
     };
     try {
@@ -174,10 +174,10 @@ const ProfilePage = () => {
   const getSavedPosts = async () => {
     if (savedPost.length !== 0) {
       setIsEmpty(false);
-      savedPost.map(async (quoteId: string) => {
+      savedPost.map(async (postId: string) => {
         try {
           const posts = await axios.get(
-            `${process.env.REACT_APP_BASE_URL}/posts/${quoteId}`
+            `${process.env.REACT_APP_BASE_URL}/posts/${postId}`
           );
           if (posts.data.data._id !== undefined) {
             setUserSavedPosts((prev: any) => [...prev, posts.data.data]);
@@ -198,7 +198,7 @@ const ProfilePage = () => {
       const uData = profile.data.data;
 
       setUserData(uData);
-      activateQuote();
+      activatePost();
       if (params.id === user._id) {
         setIsMainUser(true);
       } else {
@@ -222,13 +222,13 @@ const ProfilePage = () => {
         setSavedPost(user.saved);
       }
     }
-  }, [savedCursor, pageData.curentQuotePage, params, active]);
+  }, [savedCursor, pageData.curentPostPage, params, active]);
 
   useEffect(() => {
     setEditData({ fullname: user.fullname, bio: user.bio });
   }, []);
 
-  const activateQuote = () => {
+  const activatePost = () => {
     const postNav: any = document.getElementById("postNav");
     postNav?.click();
   };
@@ -238,10 +238,10 @@ const ProfilePage = () => {
     if (params.id !== undefined) {
       getUser();
     } else {
-      setActive("quote");
+      setActive("post");
       setUserData(user);
       setSavedPost(user.saved);
-      activateQuote();
+      activatePost();
       setUserInterets(user.interests);
       setSavedPost(user.saved);
 
@@ -278,8 +278,7 @@ const ProfilePage = () => {
               <div className="d-flex justify-content-between w-100">
                 <div className="w-100">
                   <h6 className="text-capitalize m-0">{userData.fullname}</h6>
-                  <span>@{userData.username} |</span>
-                  <span>{userData.email}</span>
+                  <span>@{userData.username}</span>
                   <p>{userData.bio}</p>
                 </div>
                 <div className="d-flex justify-content-end align-items-center prt-btn">
@@ -336,7 +335,7 @@ const ProfilePage = () => {
                 page={pageData}
                 setPageFunc={setPageData}
                 compType="adv"
-                type="quote"
+                type="post"
               />
             </div>
           )}
@@ -348,7 +347,7 @@ const ProfilePage = () => {
                 page={pageData}
                 setPageFunc={setPageData}
                 compType="adv"
-                type="quote"
+                type="post"
               />
             </div>
           )}

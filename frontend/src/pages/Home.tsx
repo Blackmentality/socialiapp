@@ -118,7 +118,7 @@ const Home = () => {
               page={pageData}
               setPageFunc={setPageData}
               compType="expl"
-              type="quote"
+              type="post"
             />
           )}
         </Container>

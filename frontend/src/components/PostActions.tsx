@@ -60,14 +60,14 @@ const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
     }
   };
 
-  const addRemoveSavedPost = (quoteId: string) => {
+  const addRemoveSavedPost = (postId: string) => {
     let mainSaved: any = [...userData.saved];
     let userD = { ...userData };
-    const isQuoteSaved = mainSaved.findIndex((id: string) => id === quoteId);
-    if (isQuoteSaved !== -1) {
-      mainSaved.splice(isQuoteSaved, 1);
+    const isPostSaved = mainSaved.findIndex((id: string) => id === postId);
+    if (isPostSaved !== -1) {
+      mainSaved.splice(isPostSaved, 1);
     } else {
-      mainSaved.push(quoteId);
+      mainSaved.push(postId);
     }
     userD.saved = mainSaved;
     dispatch(assignUser(userD));

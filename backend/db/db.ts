@@ -2,7 +2,7 @@ import { connect } from 'mongoose';
 let db;
 const connectDB = async (func: any) => {
     try {
-        await connect(`${process.env.MONGO_URI}`);
+        await connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASS}@sociali.elqpmlp.mongodb.net/?retryWrites=true&w=majority`);
         console.log('Connection active');
         func();
     } catch (error: any) {
