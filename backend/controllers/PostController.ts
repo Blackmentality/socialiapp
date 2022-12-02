@@ -14,14 +14,14 @@ const generateImg = (img_file: any) => {
 // create a post
 const createPost = async (req: any, res: any, next: any) => {
     const userId = req.uData.id;
-    let promoBody = JSON.parse(req.body.promoData);
+    let postBody = JSON.parse(req.body.promoData);
     if (req.file !== undefined) {
         const image = generateImg(req.file);
-        promoBody.image = image
+        postBody.image = image
     }
     try {
         const newPost = new PostModel({
-            ...promoBody, owner: userId
+            ...postBody, owner: userId
         })
         const post = await newPost.save();
         const user = await UserModel.findById(userId);

@@ -1,7 +1,7 @@
 import Masonry from "react-masonry-css";
 import HomeCard from "./HomeCard";
 
-const MasonryLayout = ({ posts }: any) => {
+const MasonryLayout = ({ posts, delFunc }: any) => {
   const breakpointColumnsObj: any = {
     default: 2,
     1024: 2,
@@ -18,7 +18,7 @@ const MasonryLayout = ({ posts }: any) => {
       >
         {posts !== undefined &&
           posts.map((post: any, index: any) => (
-            <HomeCard postData={post} key={index} />
+            <HomeCard postData={post} key={index} func={delFunc} />
           ))}
       </Masonry>
     </div>

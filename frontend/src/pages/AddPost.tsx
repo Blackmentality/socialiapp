@@ -93,7 +93,7 @@ const AddPost = () => {
     formData.append("image", fileData);
     formData.append("promoData", JSON.stringify(postData));
     try {
-      const createPost = await axios.put(
+      const editPost = await axios.put(
         `${process.env.REACT_APP_BASE_URL}/posts/${id}`,
         formData,
         {

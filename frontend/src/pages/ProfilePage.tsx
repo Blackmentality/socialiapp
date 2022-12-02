@@ -26,6 +26,7 @@ axios.defaults.withCredentials = true;
 
 const ProfilePage = () => {
   const params = useParams();
+  const [delKey, setDelKey] = useState("");
   const [isEmpty, setIsEmpty] = useState(false);
   const [userPosts, setUserPosts]: any = useState([]);
   const [savedPost, setSavedPost]: any = useState([]);
@@ -210,6 +211,30 @@ const ProfilePage = () => {
     }
   };
 
+  const deletePost = async () => {
+    if (delKey !== "") {
+      try {
+        await axios.delete(`${process.env.REACT_APP_BASE_URL}/posts/${delKey}`);
+        showToast("Post deleted successfully", "success");
+      } catch (error) {
+        showToast("An error occured", "error");
+      }
+      const allPost = [...userPosts];
+      const uData: any = { ...user };
+      uData["post_counts"] = userData.post_counts - 1;
+      dispatch(assignUser(uData));
+      const comIndex = allPost.findIndex((com: any) => com._id === delKey);
+      allPost.splice(comIndex, 1);
+      setUserPosts(allPost);
+    }
+  };
+
+  useEffect(() => {
+    if (delKey !== "") {
+      deletePost();
+    }
+  }, [delKey]);
+
   useEffect(() => {
     if (active === "bookmark") {
       getSavedPosts();
@@ -336,6 +361,7 @@ const ProfilePage = () => {
                 setPageFunc={setPageData}
                 compType="adv"
                 type="post"
+                delFunc={setDelKey}
               />
             </div>
           )}

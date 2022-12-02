@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import PostActions from "./PostActions";
 
-const HomeCard = ({ postData }: any) => {
+const HomeCard = ({ postData, func }: any) => {
   const [postAuthor, setPostAuthor]: any = useState(null);
   const [likes, setLikes] = useState(postData.likesCount);
   const navigate = useNavigate();
@@ -73,6 +73,7 @@ const HomeCard = ({ postData }: any) => {
           postData={postData}
           likesFunc={setLikes}
           allLikes={likes}
+          delKeyFunc={func}
         />
         <div className="w-50 d-flex justify-content-end align-items-center">
           <span>{likes} Likes</span>

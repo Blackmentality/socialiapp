@@ -17,7 +17,13 @@ import { useToasts } from "react-toast-notifications";
 import { assignUser } from "../redux/features/authSlice";
 import { useSelector, useDispatch } from "react-redux";
 
-const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
+const PostActions = ({
+  id,
+  postData,
+  likesFunc,
+  allLikes,
+  delKeyFunc,
+}: any) => {
   const dispatch = useDispatch();
   const urlParams = useParams();
   const [likedPost, setLikedPost] = useState(false);
@@ -47,7 +53,7 @@ const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
   }, []);
 
   const deletePost = async () => {
-    console.log("deleted post");
+    delKeyFunc(id);
   };
 
   const editPost = async () => {
@@ -81,8 +87,6 @@ const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
   };
   const isPostLike = () => {
     const isLike = postData.likes.includes(userData._id);
-    console.log(isLike);
-
     setLikedPost(isLike);
   };
 
