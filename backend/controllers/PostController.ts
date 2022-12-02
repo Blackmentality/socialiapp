@@ -55,8 +55,14 @@ const deletePost = async (req: any, res: any, next: any) => {
 
 // edit a post
 const editPost = async (req: any, res: any, next: any) => {
+    let promoBody = JSON.parse(req.body.promoData);
     const postId = req.params.id;
     const userId = req.uData.id;
+    if (req.file !== undefined) {
+        const image = generateImg(req.file);
+        promoBody.image = image
+    }
+
     try {
         const getPost = await PostModel.findById(postId);
         if (getPost?.owner !== userId) {
@@ -64,7 +70,7 @@ const editPost = async (req: any, res: any, next: any) => {
         } else {
             const updatePost = await PostModel.findOneAndUpdate({ _id: postId }, {
                 $set: {
-                    ...req.body
+                    ...promoBody,
                 }
             }, { new: true });
             res.status(200).json({ message: 'Updated post', success: true, data: updatePost });

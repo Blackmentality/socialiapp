@@ -18,7 +18,7 @@ router.get('/interest', verifyToken, getUserPostsInterest);
 router.get('/:id', getPost);
 
 // edit post
-router.put('/:id', verifyToken, editPost);
+router.put('/:id', upload.single('image'), verifyToken, editPost);
 
 // like and dislike
 router.put('/like/:id', verifyToken, likeDislikePost);

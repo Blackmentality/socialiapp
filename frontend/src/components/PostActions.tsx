@@ -2,10 +2,12 @@ import {
   BsHeartFill,
   BsFillChatQuoteFill,
   BsShare,
+  BsTrash,
   BsBookmark,
   BsFillBookmarkFill,
 } from "react-icons/bs";
 import "./components.scss";
+import { AiFillEdit } from "react-icons/ai";
 import { Button, ButtonGroup, Popover, OverlayTrigger } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import ShareButtons from "./ShareButtons";
@@ -44,10 +46,15 @@ const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
     }
   }, []);
 
-  const goToComment = () => {
-    console.log("clicked");
-    console.log(id);
+  const deletePost = async () => {
+    console.log("deleted post");
+  };
 
+  const editPost = async () => {
+    navigate(`/add-post/${id}`);
+  };
+
+  const goToComment = () => {
     if (urlParams.id !== undefined) {
       const comBox: any = document.getElementById("comment-box");
       const comBtn = document.getElementById("comb-btn");
@@ -159,6 +166,16 @@ const PostActions = ({ id, postData, likesFunc, allLikes }: any) => {
             <BsBookmark style={{ color: "#999" }} />
           )}
         </Button>
+        {userData._id === postData.owner && (
+          <>
+            <Button onClick={deletePost}>
+              <BsTrash />
+            </Button>
+            <Button onClick={editPost}>
+              <AiFillEdit />
+            </Button>
+          </>
+        )}
       </ButtonGroup>
     </div>
   );

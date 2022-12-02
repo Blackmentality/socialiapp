@@ -49,6 +49,7 @@ const AllRoutes = () => {
         <Route element={<Home />} path="home"></Route>
         <Route element={<ViewPost />} path="view-post/:id"></Route>
         <Route element={<AddPost />} path="add-post"></Route>
+        <Route element={<AddPost />} path="add-post/:id"></Route>
       </Route>
     </Routes>
   );

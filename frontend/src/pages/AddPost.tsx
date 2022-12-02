@@ -1,14 +1,19 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, FloatingLabel, Form, Button } from "react-bootstrap";
 import { Header } from "../components";
 import interests from "../constant/interest";
 import { useToasts } from "react-toast-notifications";
+import { useSelector, useDispatch } from "react-redux";
 import "./pages.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { assignUser } from "../redux/features/authSlice";
 axios.defaults.withCredentials = true;
 
 const AddPost = () => {
+  const userData = useSelector((state: any) => state.auth.user);
+  const { id } = useParams();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { addToast } = useToasts();
 
@@ -22,6 +27,24 @@ const AddPost = () => {
     caption: "",
     category: "",
   });
+  const getPost = async () => {
+    axios.defaults.withCredentials = true;
+    try {
+      const post = await axios.get(
+        `${process.env.REACT_APP_BASE_URL}/posts/${id}`
+      );
+      setPostData({
+        caption: post.data.data.caption,
+        category: post.data.data.category,
+      });
+      if (post.data.data.image !== "") {
+        setImage(post.data.data.image);
+      }
+    } catch (error) {
+      showToast("Post not found!", "warning");
+      navigate("/home");
+    }
+  };
   const [image, setImage]: any = useState(null);
   const [fileData, setFileData]: any = useState(null);
 
@@ -53,6 +76,9 @@ const AddPost = () => {
         }
       );
       showToast(`Post created successfully!`, "success");
+      const uData: any = { ...userData };
+      uData["post_counts"] = userData.post_counts + 1;
+      dispatch(assignUser(uData));
       navigate("/home");
     } catch (error: any) {
       setTimeout(() => {
@@ -61,6 +87,34 @@ const AddPost = () => {
       // dispatch(hideLoader);
     }
   };
+
+  const handleEditPost = async () => {
+    let formData = new FormData();
+    formData.append("image", fileData);
+    formData.append("promoData", JSON.stringify(postData));
+    try {
+      const createPost = await axios.put(
+        `${process.env.REACT_APP_BASE_URL}/posts/${id}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      showToast(`Post editted successfully!`, "success");
+      navigate("/home");
+    } catch (error: any) {
+      setTimeout(() => {
+        showToast(`An error occured!\n ${error.message}\n Try again!`, "error");
+      }, 2000);
+      // dispatch(hideLoader);
+    }
+  };
+
+  useEffect(() => {
+    if (id !== undefined) {
+      getPost();
+    }
+  }, [id]);
 
   return (
     <div>
@@ -108,8 +162,12 @@ const AddPost = () => {
               <Form.Control type="file" onChange={(e: any) => chooseImg(e)} />
             </Form.Group>
             <div className="d-grid gap-2">
-              <Button variant="primary" size="lg" onClick={handlePost}>
-                Create Post
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={id !== undefined ? handleEditPost : handlePost}
+              >
+                {id !== undefined ? "Save Post" : "Create Post"}
               </Button>
             </div>
           </div>
