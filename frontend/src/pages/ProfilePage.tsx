@@ -341,7 +341,7 @@ const ProfilePage = () => {
           </Nav>
           {((userPosts.length === 0 && isEmpty === true) ||
             (userSavedPosts.length === 0 && isEmpty === true)) && (
-            <EmptyData emptyType={active} />
+            <>{params.id === user._id && <EmptyData emptyType={active} />}</>
           )}
           {userPosts.length === 0 && active === "posts" && isEmpty === false ? (
             <SkeletonLayout />

@@ -3,6 +3,7 @@ import food from '../assets/img/interests/food.jpeg';
 import religion from '../assets/img/interests/religion.jpeg';
 import lifestyle from '../assets/img/interests/lifestyle.jpeg';
 import travel from '../assets/img/interests/travel.jpeg';
+import education from '../assets/img/interests/education.jpg';
 
 const interests = [
     {
@@ -24,6 +25,10 @@ const interests = [
     {
         img: lifestyle,
         name: 'Lifestyle'
+    },
+    {
+        img: education,
+        name: 'Education'
     }
 ];
 
