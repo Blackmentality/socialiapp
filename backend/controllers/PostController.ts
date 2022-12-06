@@ -2,9 +2,10 @@ import { sendError } from './../utils/helper';
 import UserModel from '../models/User';
 import { Request, Response } from 'express';
 import PostModel from '../models/Post';
+const NewsAPI = require('newsapi');
+const newsapi_get = new NewsAPI('8fd2416cae514f968a86f8c3872c4c54');
 
 const pageLimit = 50;
-
 const generateImg = (img_file: any) => {
     const encoded = img_file?.buffer.toString('base64');
     const encode_img = `data:image/jpeg;base64,${encoded}`;
@@ -27,6 +28,27 @@ const createPost = async (req: any, res: any, next: any) => {
         const user = await UserModel.findById(userId);
         await user?.updateOne({ $inc: { post_counts: 1 } });
         res.status(200).json({ message: 'created post', success: true, data: post });
+    } catch (error: any) {
+        next(sendError(res, 500, error.message));
+    }
+}
+
+// create a news
+const getNews = async (req: any, res: any, next: any) => {
+    const category = req.params.id;
+    console.log(category);
+    try {
+        newsapi_get.v2.everything({
+            q: `${category}`,
+            from: '2022-12-01',
+            to: '2022-12-31',
+            language: 'en',
+            pageSize: 50,
+            sortBy: 'relevancy',
+        }).then((response: any) => {
+            console.log(response);
+            res.status(200).json({ message: 'got news', success: true, data: response.articles });
+        });
     } catch (error: any) {
         next(sendError(res, 500, error.message));
     }
@@ -224,4 +246,5 @@ export {
     getUserPosts,
     getUserPostsInterest,
     searchPosts,
+    getNews
 }

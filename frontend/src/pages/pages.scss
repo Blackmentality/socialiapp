@@ -162,13 +162,13 @@
 .profm-main {
   .profm-card {
     margin-bottom: 3%;
-    .profm-tm{
+    .profm-tm {
       margin-bottom: 2%;
-      span{
+      span {
         color: #999;
-        font-size: .9rem;
+        font-size: 0.9rem;
       }
-      h6{
+      h6 {
         font-family: pjs;
       }
     }
@@ -187,19 +187,19 @@
   }
 }
 
-.viewp-main{
+.viewp-main {
   width: 50%;
   margin: 2% 25% 0;
-  .post-card-mid{
-    img{
+  .post-card-mid {
+    img {
       height: 400px;
       object-fit: cover;
     }
   }
 }
 
-.pc-card{
-  img{
+.pc-card {
+  img {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -208,7 +208,58 @@
   }
 }
 
-.reset-pass{
+.reset-pass {
   font-size: 1.1rem !important;
-  text-align: center; 
+  text-align: center;
+}
+
+.notheader {
+  font-family: pjs;
+  margin-bottom: 5%;
+}
+
+.noti-card:last-child {
+  border-bottom: none;
+}
+.noti-card {
+  margin-bottom: 2.5%;
+  border-bottom: 1px solid #f5f5f5;
+  padding-bottom: 2.5%;
+  .noti-icon {
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    margin-right: 10px;
+    border-radius: 50%;
+  }
+  h6 {
+    font-family: pjr;
+    font-size: 0.95rem;
+  }
+  span {
+    font-size: 0.85rem;
+    color: #999;
+  }
+}
+
+.newsCard {
+  img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  h6 {
+    font-size: 1.2rem;
+    margin: 2% 0 !important;
+    font-family: "pjs";
+  }
+  span {
+    color: #999;
+    font-size: 0.9rem;
+  }
+  .newsBtn {
+    background-color: #000;
+    color: #fff;
+    font-family: pjs;
+  }
 }

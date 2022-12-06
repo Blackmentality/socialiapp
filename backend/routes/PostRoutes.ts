@@ -1,6 +1,6 @@
 import { Router } from "express";
 import upload from "../config/imageUpload";
-import { createPost, deletePost, editPost, getPost, getUserPostsInterest, likeDislikePost, saveAndUnSavePost, searchPosts, getUserPosts } from "../controllers/PostController";
+import { createPost, getNews, deletePost, editPost, getPost, getUserPostsInterest, likeDislikePost, saveAndUnSavePost, searchPosts, getUserPosts } from "../controllers/PostController";
 import verifyToken from "../middleware/VerifyToken";
 
 const router = Router();
@@ -16,6 +16,8 @@ router.get('/interest', verifyToken, getUserPostsInterest);
 
 // get a posts
 router.get('/:id', getPost);
+
+router.get('/news/:id', getNews);
 
 // edit post
 router.put('/:id', upload.single('image'), verifyToken, editPost);

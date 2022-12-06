@@ -1,10 +1,10 @@
-import { Navbar, Container, Nav, Form, Button } from "react-bootstrap";
+import { Navbar, Container, Nav, Form } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logo } from "../constant/assets";
 import { SiAddthis } from "react-icons/si";
 import { AiFillHome } from "react-icons/ai";
-import { FaUserCircle } from "react-icons/fa";
-import { IoMdLogOut } from "react-icons/io";
+import { FaUserCircle, FaGlobeAfrica, FaSignOutAlt } from "react-icons/fa";
+import { BsFillBellFill } from "react-icons/bs";
 
 import { useDispatch } from "react-redux";
 import { useToasts } from "react-toast-notifications";
@@ -68,27 +68,36 @@ const Header = ({ searchFunc }: any) => {
             <Link className="nav-link" to={"/home"}>
               <AiFillHome />
             </Link>
-            <Link className="nav-link" to={"/add-post"}>
-              <SiAddthis />
-            </Link>
             <Link className="nav-link" to={"/profile"}>
               <FaUserCircle />
             </Link>
-            <Nav.Link className="nav-link" onClick={handleLogout}>
-              <IoMdLogOut />
-            </Nav.Link>
+            <Link className="nav-link" to={"/add-post"}>
+              <SiAddthis />
+            </Link>
+            <Link className="nav-link" to={"/notifications"}>
+              <BsFillBellFill />
+            </Link>
+            <Link className="nav-link" to={"/explore"}>
+              <FaGlobeAfrica />
+            </Link>
           </Nav>
-          <Form className="d-flex">
-            <DebounceInput
-              placeholder="Search for post..."
-              aria-label="search"
-              aria-describedby="basic-addon1"
-              className="form-control"
-              minLength={1}
-              debounceTimeout={1500}
-              onChange={(e: any) => setSearchText(e.target.value)}
-            />
-          </Form>
+          <div className="d-flex nav-size align-items-center">
+            <Form>
+              <DebounceInput
+                placeholder="Search for post..."
+                aria-label="search"
+                aria-describedby="basic-addon1"
+                className="form-control"
+                minLength={1}
+                debounceTimeout={1500}
+                onChange={(e: any) => setSearchText(e.target.value)}
+              />
+            </Form>
+
+            <Nav.Link className="nav-link ms-3" onClick={handleLogout}>
+              <FaSignOutAlt />
+            </Nav.Link>
+          </div>
         </Navbar.Collapse>
       </Container>
     </Navbar>

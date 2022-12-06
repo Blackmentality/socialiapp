@@ -1,7 +1,8 @@
 import Masonry from "react-masonry-css";
 import HomeCard from "./HomeCard";
+import NewsCard from "./NewsCard";
 
-const MasonryLayout = ({ posts, delFunc }: any) => {
+const MasonryLayout = ({ posts, delFunc, viewType }: any) => {
   const breakpointColumnsObj: any = {
     default: 2,
     1024: 2,
@@ -16,9 +17,15 @@ const MasonryLayout = ({ posts, delFunc }: any) => {
         className="my-masonry-grid"
         columnClassName="my-masonry-grid_column"
       >
-        {posts !== undefined &&
+        {viewType === undefined &&
+          posts !== undefined &&
           posts.map((post: any, index: any) => (
             <HomeCard postData={post} key={index} func={delFunc} />
+          ))}
+        {viewType === "news" &&
+          posts !== undefined &&
+          posts.map((post: any, index: any) => (
+            <NewsCard newsData={post} key={index} />
           ))}
       </Masonry>
     </div>

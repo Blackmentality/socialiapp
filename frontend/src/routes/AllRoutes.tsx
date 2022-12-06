@@ -8,6 +8,8 @@ import {
   Register,
   Home,
   ViewPost,
+  ExplorePage,
+  Notifications,
 } from "../pages";
 import ProtectRoutes from "./ProtectedRoutes";
 import { useSelector } from "react-redux";
@@ -49,6 +51,8 @@ const AllRoutes = () => {
         <Route element={<Home />} path="home"></Route>
         <Route element={<ViewPost />} path="view-post/:id"></Route>
         <Route element={<AddPost />} path="add-post"></Route>
+        <Route element={<Notifications />} path="notifications"></Route>
+        <Route element={<ExplorePage />} path="explore"></Route>
         <Route element={<AddPost />} path="add-post/:id"></Route>
       </Route>
     </Routes>
